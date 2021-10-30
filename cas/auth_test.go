@@ -5,7 +5,7 @@ import (
 )
 
 func TestAuth(t *testing.T) {
-	token, err := GetToken("21111111", "66666666")
+	token, err := Login("https://api.hduhelp.com/login/direct/cas?clientID=healthcheckin&redirect=https://healthcheckin.hduhelp.com/#/auth", "21111111", "666666")
 	if err != nil {
 		t.Error(err)
 	}

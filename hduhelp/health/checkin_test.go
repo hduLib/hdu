@@ -34,3 +34,10 @@ func TestHDUHealth_Info(t *testing.T) {
 	}
 	t.Log(h.Info())
 }
+
+func TestLoginWithCas(t *testing.T) {
+	h := New()
+	if err := h.LoginWithCas("21111111", "666666"); err != nil {
+		t.Error(err)
+	}
+}

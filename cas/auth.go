@@ -3,8 +3,11 @@ package cas
 import (
 	_ "embed"
 	"errors"
+	"fmt"
 	"github.com/dop251/goja"
 	request "github.com/parnurzeal/gorequest"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -12,36 +15,33 @@ import (
 
 var ltRegexp = regexp.MustCompile("<input type=\"hidden\" id=\"lt\" name=\"lt\" value=\"(.*)\" />")
 var executionRegexp = regexp.MustCompile("<input type=\"hidden\" name=\"execution\" value=\"(.*)\" />")
-var tokenRegexp = regexp.MustCompile("https://healthcheckin.hduhelp.com/\\?auth=([0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})")
-
-const jumpURL = "https://api.hduhelp.com/login/direct/cas?clientID=healthcheckin&redirect=https://healthcheckin.hduhelp.com/#/auth"
 
 //go:embed des.js
 var rawJs []byte
 
-func GetToken(user, passwd string) (string, error) {
+func Login(URL, user, passwd string) (*http.Response, error) {
 	var lt, execution string
 	//搞到lt和execution
 	req := request.New()
 	req.AppendHeader("User-Agent", "Mozilla/5.0 (Linux; U; Android 4.1.2; zh-cn; GT-I9300 Build/JZO54K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 MicroMessenger/5.2.380 Edg/94.0.4606.71")
-	res, body, errs := req.Get(jumpURL).End()
-	if errs != nil && res.StatusCode == 200 {
-		return "", errs[0]
+	res, body, errs := req.Get(URL).End()
+	if errs != nil || res.StatusCode != 200 {
+		return nil, errs[0]
 	}
 	tmp := ltRegexp.FindStringSubmatch(body)
 	if len(tmp) != 2 {
-		return "", errors.New("提取lt错误")
+		return nil, errors.New("提取lt错误")
 	}
 	lt = tmp[1]
 	tmp = executionRegexp.FindStringSubmatch(body)
 	if len(tmp) != 2 {
-		return "", errors.New("提取execution错误")
+		return nil, errors.New("提取execution错误")
 	}
 	execution = tmp[1]
 	//获取rsa
 	rsa, err := getRsa(user + passwd + lt)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	postData := url.Values{}
@@ -61,10 +61,17 @@ func GetToken(user, passwd string) (string, error) {
 		"_eventId":  "submit"}).End()
 
 	if errs != nil {
-		return "", errs[0]
+		return nil, errs[0]
 	}
-	tmp = tokenRegexp.FindStringSubmatch(res.Request.URL.String())
-	return tmp[1], nil
+
+	if res.StatusCode != 200 {
+		content, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("http code isn't 200:%s", string(content))
+	}
+	return res, nil
 }
 
 func getRsa(data string) (string, error) {

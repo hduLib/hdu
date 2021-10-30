@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/BaiMeow/hdu/cas"
 	request "github.com/parnurzeal/gorequest"
 	"time"
 )
@@ -154,17 +153,6 @@ func (h *Health) SetLocation(province, city, country string) {
 	h.profile.province = province
 	h.profile.city = city
 	h.profile.country = country
-}
-
-func (h *Health) GetTokenByCas(passwd string) error {
-	token, err := cas.GetToken(h.profile.id, passwd)
-	if err != nil {
-		return err
-	}
-	if err := h.SetToken(token); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (h *Health) Validate() (*validate, error) {
