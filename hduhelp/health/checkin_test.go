@@ -23,6 +23,7 @@ func TestValidate(t *testing.T) {
 	validate, err := h.Validate()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	t.Logf("还剩下%d天", int(time.Until(time.Unix(validate.ExpiredTime, 0)).Hours())/24)
 }

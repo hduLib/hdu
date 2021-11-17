@@ -25,7 +25,6 @@ var regexpToken = regexp.MustCompile("/checkin token ([0-9a-z]{8}-[0-9a-z]{4}-[0
 
 func main() {
 	b = bot.New(driver.NewWsDriver("ws://localhost:6700", ""))
-	b.Run()
 	b.Attach(&bot.PrivateMsgHandler{
 		Priority: 1, F: func(MsgID int32, UserID int64, Msg message.Msg) bool {
 			if Msg[0].GetType() != "text" {
@@ -38,12 +37,17 @@ func main() {
 			}
 			c := checkin.New()
 			if err := c.SetToken(matches[1]); err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				if _, err2 := b.SendPrivateMsg(UserID, message.New().Text(fmt.Sprintf("%v", err))); err2 != nil {
+					log.Println(err)
+				}
+				return false
 			}
 			students[UserID] = c
 			sendMsg(UserID, "添加token成功")
 			return true
 		}})
+	b.Run()
 	log.Println("开始自动打卡")
 
 	for {
