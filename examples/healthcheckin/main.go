@@ -2,7 +2,7 @@
 package main
 
 /*
-q群机器人+自动健康打卡
+qq机器人+自动健康打卡
 需要自主抓包获取token，打卡需要微信或钉钉oauth得到的token，这一步很难自动化
 */
 
@@ -22,6 +22,7 @@ var b *bot.Bot
 var students = make(map[int64]*checkin.Health)
 
 var regexpToken = regexp.MustCompile("/checkin token ([0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})")
+var regexpLoc = regexp.MustCompile("/checkin location ([0-9]{6})")
 
 func main() {
 	b = bot.New(driver.NewWsDriver("ws://localhost:6700", ""))
@@ -32,21 +33,47 @@ func main() {
 			}
 			msg := Msg[0].(message.Text).Text
 			matches := regexpToken.FindStringSubmatch(msg)
-			if len(matches) != 2 {
-				return false
-			}
-			c := checkin.New()
-			if err := c.SetToken(matches[1]); err != nil {
-				log.Println(err)
-				if _, err2 := b.SendPrivateMsg(UserID, message.New().Text(fmt.Sprintf("%v", err))); err2 != nil {
+			if len(matches) == 2 {
+				c := checkin.New()
+				if err := c.SetToken(matches[1]); err != nil {
 					log.Println(err)
+					sendMsg(UserID, fmt.Sprintf("%v", err))
+					return false
 				}
-				return false
+				students[UserID] = c
+				sendMsg(UserID, "添加token成功")
+				return true
 			}
-			students[UserID] = c
-			sendMsg(UserID, "添加token成功")
-			return true
-		}})
+			matches = regexpLoc.FindStringSubmatch(msg)
+			if len(matches) == 2 {
+				if students[UserID] == nil {
+					sendMsg(UserID, "未绑定token")
+					return true
+				}
+				if err := students[UserID].SetLocation(matches[1]); err != nil {
+					sendMsg(UserID, fmt.Sprintf("%v", err))
+				}
+				return true
+			}
+			if msg == "/checkin at home" {
+				if students[UserID] == nil {
+					sendMsg(UserID, "未绑定token")
+					return true
+				}
+				students[UserID].AtHome()
+				return true
+			}
+			if msg == "/checkin at school" {
+				if students[UserID] == nil {
+					sendMsg(UserID, "未绑定token")
+					return true
+				}
+				students[UserID].AtSchool()
+				return true
+			}
+			return false
+		},
+	})
 	b.Run()
 	log.Println("开始自动打卡")
 
@@ -70,7 +97,8 @@ func main() {
 	}
 }
 
-func sendMsg(qq int64, txt string) error {
-	_, err := b.SendPrivateMsg(qq, message.New().Text(txt))
-	return err
+func sendMsg(qq int64, txt string) {
+	if _, err := b.SendPrivateMsg(qq, message.New().Text(txt)); err != nil {
+		fmt.Printf("发送消息时出错(qq:%d,msg:%s)：%v", qq, txt, err)
+	}
 }
