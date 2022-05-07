@@ -52,7 +52,9 @@ func main() {
 				}
 				if err := students[UserID].SetLocation(matches[1]); err != nil {
 					sendMsg(UserID, fmt.Sprintf("%v", err))
+					return true
 				}
+				sendMsg(UserID, "已将地区编码设置为"+matches[1])
 				return true
 			}
 			if msg == "/checkin at home" {
@@ -61,6 +63,7 @@ func main() {
 					return true
 				}
 				students[UserID].AtHome()
+				sendMsg(UserID, "已修改为在家")
 				return true
 			}
 			if msg == "/checkin at school" {
@@ -69,6 +72,7 @@ func main() {
 					return true
 				}
 				students[UserID].AtSchool()
+				sendMsg(UserID, "已修改为在学校")
 				return true
 			}
 			return false
