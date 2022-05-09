@@ -10,11 +10,11 @@ import (
 )
 
 const (
-	checkInURL  = "https://api.hduhelp.com/base/healthcheckin?sign="
 	validateURL = "https://api.hduhelp.com/token/validate"
+	checkInURL  = "https://api.hduhelp.com/salmon_base/health/checkin?sign="
 	infoURL     = "https://api.hduhelp.com/salmon_base/person/info"
-	dailyURL    = "https://api.hduhelp.com/base/healthcheckin/info/daily"
-	phoneURl    = "https://api.hduhelp.com/base/healthcheckin/phone"
+	dailyURL    = "https://api.hduhelp.com/salmon_base/health/checkin/today"
+	phoneURl    = "https://api.hduhelp.com/salmon_base/health/phone"
 	codeURL     = "https://api.hduhelp.com/salmon_base/health/code"
 )
 
@@ -57,7 +57,7 @@ type checkInPayload struct {
 	City      string `json:"city,omitempty"`
 	//这里的country是因为杭电助手那边拼错了，我没办法
 	County        string `json:"country,omitempty"`
-	AnswerJsonStr string `json:"answerjsonstr,omitempty"`
+	AnswerJsonStr string `json:"answerJsonStr,omitempty"`
 }
 
 type info struct {
@@ -270,7 +270,7 @@ func newAnsPayload(province, city, county string, atHome bool) string {
 		Ques21: "否",
 		Ques22: "否",
 		Ques23: "否",
-		Ques24: "共二针 - 已完成第二针",
+		Ques24: "共三针 - 已完成第三针",
 		CarTo:  []string{province, city, county},
 	}
 	if atHome {

@@ -17,7 +17,7 @@ func TestCheckin(t *testing.T) {
 
 func TestValidate(t *testing.T) {
 	h := New()
-	if err := h.SetToken(" b1585681-0f01-4ded-be80-e162fd070b82"); err != nil {
+	if err := h.SetToken("b1585681-0f01-4ded-be80-e162fd070b82"); err != nil {
 		t.Error(err)
 	}
 	validate, err := h.Validate()
