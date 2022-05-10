@@ -32,18 +32,20 @@ func main() {
 				return false
 			}
 			msg := Msg[0].(message.Text).Text
+			//添加token
 			matches := regexpToken.FindStringSubmatch(msg)
 			if len(matches) == 2 {
 				c := checkin.New()
 				if err := c.SetToken(matches[1]); err != nil {
 					log.Println(err)
 					sendMsg(UserID, fmt.Sprintf("%v", err))
-					return false
+					return true
 				}
 				students[UserID] = c
 				sendMsg(UserID, "添加token成功")
 				return true
 			}
+			//修改地区编码
 			matches = regexpLoc.FindStringSubmatch(msg)
 			if len(matches) == 2 {
 				if students[UserID] == nil {
@@ -57,6 +59,7 @@ func main() {
 				sendMsg(UserID, "已将地区编码设置为"+matches[1])
 				return true
 			}
+			//修改状态
 			if msg == "/checkin at home" {
 				if students[UserID] == nil {
 					sendMsg(UserID, "未绑定token")
@@ -75,30 +78,47 @@ func main() {
 				sendMsg(UserID, "已修改为在学校")
 				return true
 			}
+			//人工打卡
+			if msg == "/checkin checkin" {
+				if students[UserID] != nil {
+					checkinAndValidate(students[UserID], UserID)
+				} else {
+					sendMsg(UserID, "未添加Token")
+				}
+				return true
+			}
 			return false
 		},
 	})
-	b.Run()
+	err := b.Run()
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
 	log.Println("开始自动打卡")
 
 	for {
 		now := time.Now()
-		t := time.NewTimer(time.Until(time.Date(now.Year(), now.Month(), now.Day()+1, 6, 0, 0, 0, now.Location())))
+		t := time.NewTimer(time.Until(time.Date(now.Year(), now.Month(), now.Day()+1, 7, 0, 0, 0, now.Location())))
 		<-t.C
 		for qq, c := range students {
-			if err := c.Checkin(); err != nil {
-				sendMsg(qq, err.Error())
-				continue
-			}
-			validate, err := c.Validate()
-			if err != nil {
-				sendMsg(qq, err.Error())
-				continue
-			}
-			lastDays := int(time.Until(time.Unix(validate.ExpiredTime, 0)).Hours() / 24)
-			sendMsg(qq, fmt.Sprintf("打卡成功,token还能打卡%d天", lastDays))
+			checkinAndValidate(c, qq)
 		}
 	}
+}
+
+func checkinAndValidate(c *checkin.Health, qq int64) {
+	if err := c.Checkin(); err != nil {
+		sendMsg(qq, err.Error())
+		return
+	}
+	validate, err := c.Validate()
+	if err != nil {
+		sendMsg(qq, err.Error())
+		return
+	}
+	lastDays := int(time.Until(time.Unix(validate.ExpiredTime, 0)).Hours() / 24)
+	sendMsg(qq, fmt.Sprintf("打卡成功,token还能打卡%d天", lastDays))
 }
 
 func sendMsg(qq int64, txt string) {
