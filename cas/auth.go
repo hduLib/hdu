@@ -1,11 +1,10 @@
 package cas
 
 import (
+	"bytes"
 	_ "embed"
 	"errors"
-	"fmt"
 	"github.com/dop251/goja"
-	request "github.com/parnurzeal/gorequest"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -19,27 +18,31 @@ var executionRegexp = regexp.MustCompile("<input type=\"hidden\" name=\"executio
 //go:embed des.js
 var rawJs []byte
 
-func Login(URL, user, passwd string) (*http.Response, error) {
-	var lt, execution string
+func GenLoginReq(URL, user, passwd string) (*http.Request, error) {
+	var lt, execution []byte
 	//搞到lt和execution
-	req := request.New()
-	req.AppendHeader("User-Agent", "Mozilla/5.0 (Linux; U; Android 4.1.2; zh-cn; GT-I9300 Build/JZO54K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 MicroMessenger/5.2.380 Edg/94.0.4606.71")
-	res, body, errs := req.Get(URL).End()
-	if errs != nil || res.StatusCode != 200 {
-		return nil, errs[0]
+	req, err := http.NewRequest(http.MethodGet, URL, nil)
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil || resp.StatusCode != 200 {
+		return nil, err
 	}
-	tmp := ltRegexp.FindStringSubmatch(body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	tmp := ltRegexp.FindSubmatch(body)
 	if len(tmp) != 2 {
 		return nil, errors.New("提取lt错误")
 	}
 	lt = tmp[1]
-	tmp = executionRegexp.FindStringSubmatch(body)
+	tmp = executionRegexp.FindSubmatch(body)
 	if len(tmp) != 2 {
 		return nil, errors.New("提取execution错误")
 	}
 	execution = tmp[1]
 	//获取rsa
-	rsa, err := getRsa(user + passwd + lt)
+	rsa, err := getRsa(user + passwd + string(lt))
 	if err != nil {
 		return nil, err
 	}
@@ -48,32 +51,24 @@ func Login(URL, user, passwd string) (*http.Response, error) {
 	postData.Add("rsa", rsa)
 	postData.Add("ul", strconv.Itoa(len(user)))
 	postData.Add("pl", strconv.Itoa(len(passwd)))
-	postData.Add("lt", lt)
-	postData.Add("execution", execution)
+	postData.Add("lt", string(lt))
+	postData.Add("execution", string(execution))
 	postData.Add("_eventId", "submit")
-
-	res, _, errs = req.Post(res.Request.URL.String()).Type("form").Send(map[string]string{
-		"rsa":       rsa,
-		"ul":        strconv.Itoa(len(user)),
-		"pl":        strconv.Itoa(len(passwd)),
-		"lt":        lt,
-		"execution": execution,
-		"_eventId":  "submit"}).End()
-
-	if errs != nil {
-		return nil, errs[0]
+	req, err = http.NewRequest(http.MethodPost, URL, bytes.NewBufferString(postData.Encode()))
+	if err != nil {
+		return nil, err
 	}
-
-	if res.StatusCode != 200 {
-		content, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-		return nil, fmt.Errorf("http code isn't 200:%s", string(content))
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36")
+	req.Header.Add("Referer", URL)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	for _, c := range resp.Cookies() {
+		req.AddCookie(c)
 	}
-	return res, nil
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
 }
-
 func getRsa(data string) (string, error) {
 	vm := goja.New()
 	_, err := vm.RunString(string(rawJs))

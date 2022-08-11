@@ -1,3 +1,6 @@
+// Package health is expired，
+// because hduhelp is not in charge of health,
+// which was rewritten by skl.
 package health
 
 import (

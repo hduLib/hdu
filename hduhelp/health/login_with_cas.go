@@ -3,6 +3,7 @@ package health
 import (
 	"errors"
 	"github.com/BaiMeow/hdu/cas"
+	"net/http"
 	"regexp"
 )
 
@@ -12,7 +13,11 @@ var tokenRegexp = regexp.MustCompile("https://healthcheckin.hduhelp.com/\\?auth=
 
 func (h *Health) LoginWithCas(user, passwd string) error {
 
-	res, err := cas.Login(casLoginURL, user, passwd)
+	req, err := cas.GenLoginReq(casLoginURL, user, passwd)
+	if err != nil {
+		return err
+	}
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
