@@ -8,6 +8,6 @@ func TestLogin(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(skl.XAuthToken)
+	t.Log(skl.xAuthToken)
 	return
 }

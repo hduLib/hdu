@@ -1,5 +1,5 @@
 package skl
 
-type skl struct {
-	XAuthToken string
+type User struct {
+	xAuthToken string
 }

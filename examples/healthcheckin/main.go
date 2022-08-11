@@ -3,7 +3,7 @@ package main
 
 /*
 qq机器人+自动健康打卡
-需要自主抓包获取token，打卡需要微信或钉钉oauth得到的token，这一步很难自动化
+已经适配新打卡系统
 */
 
 import (
@@ -11,18 +11,22 @@ import (
 	"github.com/BaiMeow/SimpleBot/bot"
 	"github.com/BaiMeow/SimpleBot/driver"
 	"github.com/BaiMeow/SimpleBot/message"
-	checkin "github.com/BaiMeow/hdu/hduhelp/health"
+	"github.com/BaiMeow/hdu/skl"
 	"log"
 	"regexp"
 	"time"
 )
 
+type profile struct {
+	username, password string
+	UserID             int64
+}
+
 var b *bot.Bot
 
-var students = make(map[int64]*checkin.Health)
+var students = make(map[int64]*profile)
 
-var regexpToken = regexp.MustCompile("/checkin token ([0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})")
-var regexpLoc = regexp.MustCompile("/checkin location ([0-9]{6})")
+var regexpLogin = regexp.MustCompile("/checkin login (\\d{8,9}) (.*)")
 
 func main() {
 	b = bot.New(driver.NewWsDriver("ws://localhost:6700", ""))
@@ -32,58 +36,24 @@ func main() {
 				return false
 			}
 			msg := Msg[0].(message.Text).Text
-			//添加token
-			matches := regexpToken.FindStringSubmatch(msg)
-			if len(matches) == 2 {
-				c := checkin.New()
-				if err := c.SetToken(matches[1]); err != nil {
-					log.Println(err)
-					sendMsg(UserID, fmt.Sprintf("%v", err))
-					return true
+			//login
+			matches := regexpLogin.FindStringSubmatch(msg)
+			if len(matches) == 3 {
+				c := profile{username: matches[1], password: matches[2], UserID: UserID}
+				if _, err := skl.Login(c.username, c.password); err != nil {
+					sendMsg(UserID, "登录失败")
+				} else {
+					sendMsg(UserID, "登录成功")
+					students[UserID] = &c
 				}
-				students[UserID] = c
-				sendMsg(UserID, "添加token成功")
-				return true
-			}
-			//修改地区编码
-			matches = regexpLoc.FindStringSubmatch(msg)
-			if len(matches) == 2 {
-				if students[UserID] == nil {
-					sendMsg(UserID, "未绑定token")
-					return true
-				}
-				if err := students[UserID].SetLocation(matches[1]); err != nil {
-					sendMsg(UserID, fmt.Sprintf("%v", err))
-					return true
-				}
-				sendMsg(UserID, "已将地区编码设置为"+matches[1])
-				return true
-			}
-			//修改状态
-			if msg == "/checkin at home" {
-				if students[UserID] == nil {
-					sendMsg(UserID, "未绑定token")
-					return true
-				}
-				students[UserID].AtHome()
-				sendMsg(UserID, "已修改为在家")
-				return true
-			}
-			if msg == "/checkin at school" {
-				if students[UserID] == nil {
-					sendMsg(UserID, "未绑定token")
-					return true
-				}
-				students[UserID].AtSchool()
-				sendMsg(UserID, "已修改为在学校")
 				return true
 			}
 			//人工打卡
 			if msg == "/checkin checkin" {
 				if students[UserID] != nil {
-					checkinAndValidate(students[UserID], UserID)
+					students[UserID].checkin()
 				} else {
-					sendMsg(UserID, "未添加Token")
+					sendMsg(UserID, "未登录")
 				}
 				return true
 			}
@@ -101,24 +71,24 @@ func main() {
 		now := time.Now()
 		t := time.NewTimer(time.Until(time.Date(now.Year(), now.Month(), now.Day()+1, 7, 0, 0, 0, now.Location())))
 		<-t.C
-		for qq, c := range students {
-			checkinAndValidate(c, qq)
+		for _, c := range students {
+			c.checkin()
 		}
 	}
 }
 
-func checkinAndValidate(c *checkin.Health, qq int64) {
-	if err := c.Checkin(); err != nil {
-		sendMsg(qq, err.Error())
-		return
-	}
-	validate, err := c.Validate()
+func (p *profile) checkin() {
+	user, err := skl.Login(p.username, p.password)
 	if err != nil {
-		sendMsg(qq, err.Error())
+		sendMsg(p.UserID, err.Error())
 		return
 	}
-	lastDays := int(time.Until(time.Unix(validate.ExpiredTime, 0)).Hours() / 24)
-	sendMsg(qq, fmt.Sprintf("打卡成功,token还能打卡%d天", lastDays))
+	err = user.Push()
+	if err != nil {
+		sendMsg(p.UserID, err.Error())
+		return
+	}
+	sendMsg(p.UserID, fmt.Sprintf("打卡完成:%s", time.Now().Format("Jan 2 15:04:05")))
 }
 
 func sendMsg(qq int64, txt string) {

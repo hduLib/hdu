@@ -10,7 +10,7 @@ import (
 
 const casLogin = "https://skl.hdu.edu.cn/api/userinfo?type=&index=passcard.html"
 
-func Login(id, password string) (*skl, error) {
+func Login(id, password string) (*User, error) {
 	resp, err := http.Get(casLogin)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func Login(id, password string) (*skl, error) {
 	if XAuthToken == "" {
 		return nil, errors.New("fail to get xauthtoken")
 	}
-	return &skl{
-		XAuthToken: XAuthToken,
+	return &User{
+		xAuthToken: XAuthToken,
 	}, nil
 }
