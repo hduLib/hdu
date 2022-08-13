@@ -16,7 +16,8 @@ var executionRegexp = regexp.MustCompile("<input type=\"hidden\" name=\"executio
 
 func GenLoginReq(URL, user, passwd string) (*http.Request, error) {
 	var lt, execution []byte
-	//搞到lt和execution
+
+	//获取lt和execution
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36")
 	resp, err := http.DefaultClient.Do(req)
@@ -37,11 +38,9 @@ func GenLoginReq(URL, user, passwd string) (*http.Request, error) {
 		return nil, errors.New("提取execution错误")
 	}
 	execution = tmp[1]
+
 	//获取rsa
 	rsa := getRsa(user + passwd + string(lt))
-	if err != nil {
-		return nil, err
-	}
 
 	postData := url.Values{}
 	postData.Add("rsa", rsa)
