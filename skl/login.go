@@ -2,7 +2,7 @@ package skl
 
 import (
 	"errors"
-	"github.com/BaiMeow/hdu/cas"
+	"github.com/hduLib/hdu/cas"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
 	"net/http"

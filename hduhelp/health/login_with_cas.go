@@ -2,7 +2,7 @@ package health
 
 import (
 	"errors"
-	"github.com/BaiMeow/hdu/cas"
+	"github.com/hduLib/hdu/cas"
 	"net/http"
 	"regexp"
 )

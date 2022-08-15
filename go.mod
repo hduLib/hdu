@@ -1,4 +1,4 @@
-module github.com/BaiMeow/hdu
+module github.com/hduLib/hdu
 
 go 1.16
 

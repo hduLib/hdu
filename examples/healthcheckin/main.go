@@ -11,7 +11,7 @@ import (
 	"github.com/BaiMeow/SimpleBot/bot"
 	"github.com/BaiMeow/SimpleBot/driver"
 	"github.com/BaiMeow/SimpleBot/message"
-	"github.com/BaiMeow/hdu/skl"
+	"github.com/hduLib/hdu/skl"
 	"log"
 	"regexp"
 	"time"
