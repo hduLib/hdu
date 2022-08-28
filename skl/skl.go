@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/hduLib/hdu/net"
 	"io"
 	"net/http"
 )
@@ -51,7 +52,7 @@ func (user *User) Get(data interface{}) error {
 	if err != nil {
 		return err
 	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := net.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -84,7 +85,7 @@ func (user *User) Post(data interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := net.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
