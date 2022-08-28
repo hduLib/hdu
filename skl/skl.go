@@ -44,9 +44,9 @@ func (user *User) Get(data interface{}) error {
 	var url string
 	switch data.(type) {
 	case *MyResp:
-		url = myURL
+		url = MyURL
 	case *UserInfoResp:
-		url = userInfoURL
+		url = UserInfoURL
 	}
 	req, err := user.newGet(url)
 	if err != nil {
@@ -73,9 +73,9 @@ func (user *User) Post(data interface{}) ([]byte, error) {
 	var url string
 	switch data.(type) {
 	case *PushReq:
-		url = pushURL
+		url = PushURL
 	case *LeaveReq:
-		url = leaveURL
+		url = LeaveURL
 	}
 	reqBody, err := json.Marshal(data)
 	if err != nil {

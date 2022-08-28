@@ -1,14 +1,14 @@
 package skl
 
 const (
-	pushURL     = "https://skl.hdu.edu.cn/api/punch"
-	casLogin    = "https://skl.hdu.edu.cn/api/userinfo?type=&index=passcard.html"
-	myURL       = "https://skl.hdu.edu.cn/api/passcard/my"
-	userInfoURL = "https://skl.hdu.edu.cn/api/userinfo?type="
-	leaveURL    = "https://skl.hdu.edu.cn/api/pass-leave/add"
+	PushURL     = "https://skl.hdu.edu.cn/api/punch"
+	CasLogin    = "https://skl.hdu.edu.cn/api/userinfo?type=&index=passcard.html"
+	MyURL       = "https://skl.hdu.edu.cn/api/passcard/my"
+	UserInfoURL = "https://skl.hdu.edu.cn/api/userinfo?type="
+	LeaveURL    = "https://skl.hdu.edu.cn/api/pass-leave/add"
 )
 
-var pushReqHDU = PushReq{
+var PushReqHDU = PushReq{
 	CurrentLocation: "浙江省杭州市钱塘区",
 	City:            "杭州市",
 	DistrictAdcode:  "330114",
