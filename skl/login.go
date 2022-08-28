@@ -4,18 +4,16 @@ import (
 	"errors"
 	"github.com/hduLib/hdu/cas"
 	"github.com/tidwall/gjson"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
-
-const casLogin = "https://skl.hdu.edu.cn/api/userinfo?type=&index=passcard.html"
 
 func Login(id, password string) (*User, error) {
 	resp, err := http.Get(casLogin)
 	if err != nil {
 		return nil, err
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
