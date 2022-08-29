@@ -9,7 +9,7 @@ import (
 )
 
 func Login(id, password string) (*User, error) {
-	resp, err := http.Get(CasLogin)
+	resp, err := http.Get(casLogin)
 	if err != nil {
 		return nil, err
 	}
