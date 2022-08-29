@@ -15,7 +15,7 @@ func TestUser_Push(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if err := skl.Push(&pushReqHDU); err != nil {
+	if err := skl.Push(&PushReqHDU); err != nil {
 		t.Error(err)
 		return
 	}

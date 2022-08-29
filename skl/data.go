@@ -8,7 +8,7 @@ const (
 	leaveURL    = "https://skl.hdu.edu.cn/api/pass-leave/add"
 )
 
-var pushReqHDU = PushReq{
+var PushReqHDU = PushReq{
 	CurrentLocation: "浙江省杭州市钱塘区",
 	City:            "杭州市",
 	DistrictAdcode:  "330114",

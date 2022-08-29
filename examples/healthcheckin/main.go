@@ -1,4 +1,4 @@
-//健康打卡自动打卡
+// 健康打卡自动打卡
 package main
 
 /*
@@ -83,7 +83,7 @@ func (p *profile) checkin() {
 		sendMsg(p.UserID, err.Error())
 		return
 	}
-	err = user.Push()
+	err = user.Push(&skl.PushReqHDU)
 	if err != nil {
 		sendMsg(p.UserID, err.Error())
 		return
