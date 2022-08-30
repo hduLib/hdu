@@ -40,14 +40,7 @@ func (user *User) newPost(url string, body []byte) (*http.Request, error) {
 	return req, nil
 }
 
-func (user *User) Get(data interface{}) error {
-	var url string
-	switch data.(type) {
-	case *MyResp:
-		url = myURL
-	case *UserInfoResp:
-		url = userInfoURL
-	}
+func (user *User) get(url string, data interface{}) error {
 	req, err := user.newGet(url)
 	if err != nil {
 		return err
@@ -69,14 +62,7 @@ func (user *User) Get(data interface{}) error {
 	return nil
 }
 
-func (user *User) Post(data interface{}) ([]byte, error) {
-	var url string
-	switch data.(type) {
-	case *PushReq:
-		url = pushURL
-	case *LeaveReq:
-		url = leaveURL
-	}
+func (user *User) post(url string, data interface{}) ([]byte, error) {
 	reqBody, err := json.Marshal(data)
 	if err != nil {
 		return nil, err

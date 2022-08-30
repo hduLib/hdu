@@ -6,6 +6,7 @@ const (
 	myURL       = "https://skl.hdu.edu.cn/api/passcard/my"
 	userInfoURL = "https://skl.hdu.edu.cn/api/userinfo?type="
 	leaveURL    = "https://skl.hdu.edu.cn/api/pass-leave/add"
+	courseURL   = "https://skl.hdu.edu.cn/api/course"
 )
 
 var PushReqHDU = PushReq{
@@ -147,4 +148,79 @@ type LeaveReq struct {
 	Destination string `json:"destination"`
 	// 附件列表，疑似先上传到指定oss
 	FileList []OSSFile `json:"fileList"`
+}
+
+type course struct {
+	// 教师学院编号，如计算机为05
+	TeacherUnitNo string `json:"teacherUnitNo"`
+	// 教师学院名称
+	TeacherUnitName string `json:"teacherUnitName"`
+	// 未知，可能是教师号
+	TeacherNo string `json:"teacherNo"`
+	// 开课学年
+	SchoolYear string `json:"schoolYear"`
+	// 开课学期
+	Semester string `json:"semester"`
+	// 教师职称
+	TeacherMajor *string `json:"teacherMajor"`
+	// 未知
+	CourseSchemaId string `json:"courseSchemaId"`
+	// 课程Id（不是课程代码，是UUID）
+	CourseId string `json:"courseId"`
+	// 课程名称
+	CourseName string `json:"courseName"`
+	// 上课节次
+	StartSection int `json:"startSection"`
+	// 下课节次
+	EndSection int `json:"endSection"`
+	// 开始上课周次
+	StartWeek int `json:"startWeek"`
+	// 结束上课周次
+	EndWeek int `json:"endWeek"`
+	// 单双周，可能为“单”,“双”,nil
+	Period *string `json:"period"`
+	// 上课地址（教室）
+	ClassRoom string `json:"classRoom"`
+	// 上课weekday
+	WeekDay int `json:"weekDay"`
+	// 教室名称
+	TeacherName string `json:"teacherName"`
+	// 课程代码（长，如："(2022-2023-1)-C5692034-2"）
+	CourseCode string `json:"courseCode"`
+	// 课程代码 (如:"C5692034")
+	CourseNo string `json:"courseNo"`
+	// 课程归属 (如：“艺术创作与审美体验”)
+	CourseType string `json:"courseType"`
+	// 学分
+	Mark float64 `json:"mark"`
+	// 未知
+	ListenTime int `json:"listenTime"`
+	// 未知
+	ListenStatus interface{} `json:"listenStatus"`
+	// 教学班组成
+	CourseClass string `json:"courseClass"`
+	// 未知
+	TotalTime int `json:"totalTime"`
+	// 学生数量
+	StudentCount int `json:"studentCount"`
+	// 开课学院名称
+	UnitName string `json:"unitName"`
+	// 开课学院编号
+	UnitCode string `json:"unitCode"`
+	// 开课时间（如："星期三第1-2节{1-17周}"）
+	CourseSchema string `json:"courseSchema"`
+	// 未知，貌似均为"1",怀疑研究室不是"1"
+	StudentType string `json:"studentType"`
+}
+
+type courseResp struct {
+	// 周次，请求参数中的startTime所对应的周次
+	Week int `json:"week"`
+	// 学年，如"2022-2023"
+	Xn string `json:"xn"`
+	// 学期，"1"或"2"
+	Xq string `json:"xq"`
+	// 请求参数的startTime,默认为当前学期第一天
+	StartTime int64    `json:"startTime"`
+	List      []course `json:"list"`
 }
