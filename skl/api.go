@@ -25,7 +25,7 @@ func (user *User) Leave(payload *LeaveReq) error {
 // Course needs a startTime, which determined the semester
 // that the returned course list belongs to. So you may simply
 // use time.Now() to get the current course list.
-func (user *User) Course(startTime time.Time) ([]course, error) {
+func (user *User) Course(startTime time.Time) (*courseResp, error) {
 	resp := new(courseResp)
-	return resp.List, user.get(courseURL+"?startTime="+startTime.Format("2006-01-02"), resp)
+	return resp, user.get(courseURL+"?startTime="+startTime.Format("2006-01-02"), resp)
 }
