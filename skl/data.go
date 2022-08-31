@@ -150,7 +150,7 @@ type LeaveReq struct {
 	FileList []OSSFile `json:"fileList"`
 }
 
-type courseResp struct {
+type CourseResp struct {
 	// 周次，请求参数中的startTime所对应的周次
 	Week int `json:"week"`
 	// 学年，如"2022-2023"
@@ -171,7 +171,7 @@ type courseResp struct {
 		// 开课学期
 		Semester string `json:"semester"`
 		// 教师职称
-		TeacherMajor *string `json:"teacherMajor"`
+		TeacherMajor string `json:"teacherMajor"`
 		// 未知
 		CourseSchemaId string `json:"courseSchemaId"`
 		// 课程Id（不是课程代码，是UUID）
@@ -186,11 +186,11 @@ type courseResp struct {
 		StartWeek int `json:"startWeek"`
 		// 结束上课周次
 		EndWeek int `json:"endWeek"`
-		// 单双周，可能为“单”,“双”,nil
-		Period *string `json:"period"`
+		// 单双周，可能为"单","双",""
+		Period string `json:"period"`
 		// 上课地址（教室）
 		ClassRoom string `json:"classRoom"`
-		// 上课weekday
+		// 上课weekday(1-6),周日未知
 		WeekDay int `json:"weekDay"`
 		// 教室名称
 		TeacherName string `json:"teacherName"`
