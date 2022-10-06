@@ -1,6 +1,7 @@
 package skl
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -33,7 +34,7 @@ func TestUser_PushLogs(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(resp)
+	fmt.Println(resp.Count)
 }
 
 func TestUser_My(t *testing.T) {
@@ -47,7 +48,7 @@ func TestUser_My(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(resp)
+	fmt.Println(resp.Status)
 }
 
 func TestUser_Course(t *testing.T) {
@@ -61,7 +62,7 @@ func TestUser_Course(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(resp)
+	fmt.Println(resp.Week)
 }
 
 func TestUser_UserInfo(t *testing.T) {
@@ -75,5 +76,5 @@ func TestUser_UserInfo(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(resp)
+	fmt.Println(resp)
 }
