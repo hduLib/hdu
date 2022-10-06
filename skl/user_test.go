@@ -34,7 +34,12 @@ func TestUser_PushLogs(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	fmt.Println(resp.Count)
+	if !resp.HasPush(time.Now()) {
+		t.Error("not push today")
+	}
+	if resp.HasPush(time.Now().Add(time.Hour * 24)) {
+		t.Error("why tomorrow pushed")
+	}
 }
 
 func TestUser_My(t *testing.T) {
