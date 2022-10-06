@@ -3,13 +3,18 @@ package skl
 import (
 	"errors"
 	"github.com/hduLib/hdu/cas"
+	"github.com/hduLib/hdu/net"
 	"github.com/tidwall/gjson"
 	"io"
 	"net/http"
 )
 
 func Login(id, password string) (*User, error) {
-	resp, err := http.Get(casLogin)
+	req, err := http.NewRequest(http.MethodGet, casLoginURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := net.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +23,7 @@ func Login(id, password string) (*User, error) {
 		return nil, err
 	}
 	url := gjson.Get(string(body), "url").String()
-	req, err := cas.GenLoginReq(url, id, password)
+	req, err = cas.GenLoginReq(url, id, password)
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,8 @@ package skl
 
 const (
 	pushURL     = "https://skl.hdu.edu.cn/api/punch"
-	casLogin    = "https://skl.hdu.edu.cn/api/userinfo?type=&index=passcard.html"
+	pushLogURL  = "https://skl.hdu.edu.cn/api/punch/my"
+	casLoginURL = "https://skl.hdu.edu.cn/api/userinfo?type=&index=passcard.html"
 	myURL       = "https://skl.hdu.edu.cn/api/passcard/my"
 	userInfoURL = "https://skl.hdu.edu.cn/api/userinfo?type="
 	leaveURL    = "https://skl.hdu.edu.cn/api/pass-leave/add"
@@ -54,6 +55,52 @@ type PushReq struct {
 	// 1 密接
 	// 2 次密接
 	Last14Days int `json:"last14days"`
+}
+
+type PushLogResp struct {
+	PageNo       int         `json:"pageNo"`
+	PageSize     int         `json:"pageSize"`
+	Count        int         `json:"count"`
+	Start        int         `json:"start"`
+	OrderByList  interface{} `json:"orderByList"`
+	OrderAscList interface{} `json:"orderAscList"`
+	List         []struct {
+		StudentName     string      `json:"studentName"`
+		CardNo          string      `json:"cardNo"`
+		StudentType     int         `json:"studentType"`
+		Grade           string      `json:"grade"`
+		Sex             string      `json:"sex"`
+		ClassNo         string      `json:"classNo"`
+		StudentStatus   int         `json:"studentStatus"`
+		UnitName        string      `json:"unitName"`
+		Id              string      `json:"id"`
+		StaffId         string      `json:"staffId"`
+		Province        string      `json:"province"`
+		City            string      `json:"city"`
+		District        string      `json:"district"`
+		DistrictAdcode  string      `json:"districtAdcode"`
+		HealthCode      int         `json:"healthCode"`
+		EnterUniversity interface{} `json:"enterUniversity"`
+		HealthReport    int         `json:"healthReport"`
+		CurrentLiving   int         `json:"currentLiving"`
+		Last14Days      int         `json:"last14days"`
+		ShotsCompleted  interface{} `json:"shotsCompleted"`
+		NucleicAcid     interface{} `json:"nucleicAcid"`
+		HealthStatus    int         `json:"healthStatus"`
+		LocationStatus  int         `json:"locationStatus"`
+		ExamineStatus   int         `json:"examineStatus"`
+		CreateDate      int64       `json:"createDate"`
+		CreateTime      int64       `json:"createTime"`
+		ModifyTime      interface{} `json:"modifyTime"`
+		UnitId          interface{} `json:"unitId"`
+		TeacherId       string      `json:"teacherId"`
+		CreateDateStart interface{} `json:"createDateStart"`
+		CreateDateEnd   interface{} `json:"createDateEnd"`
+		TeacherName     string      `json:"teacherName"`
+		IsRisk          interface{} `json:"isRisk"`
+		Risk            interface{} `json:"risk"`
+	} `json:"list"`
+	End int `json:"end"`
 }
 
 type MyResp struct {

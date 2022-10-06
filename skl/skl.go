@@ -3,9 +3,7 @@ package skl
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/hduLib/hdu/net"
-	"io"
 	"net/http"
 )
 
@@ -45,21 +43,7 @@ func (user *User) get(url string, data interface{}) error {
 	if err != nil {
 		return err
 	}
-	resp, err := net.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("status code is %d:%s", resp.StatusCode, string(body))
-	}
-	if err := json.Unmarshal(body, data); err != nil {
-		return err
-	}
-	return nil
+	return net.Get(req, data)
 }
 
 func (user *User) post(url string, data interface{}) ([]byte, error) {
@@ -71,16 +55,5 @@ func (user *User) post(url string, data interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := net.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	resBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("status code is %d:%s", resp.StatusCode, string(resBody))
-	}
-	return resBody, err
+	return net.Post(req)
 }

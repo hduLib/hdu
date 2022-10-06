@@ -7,6 +7,11 @@ func (user *User) Push(payload *PushReq) error {
 	return err
 }
 
+func (user *User) PushLogs() (*PushLogResp, error) {
+	resp := new(PushLogResp)
+	return resp, user.get(pushLogURL, resp)
+}
+
 func (user *User) My() (*MyResp, error) {
 	resp := new(MyResp)
 	return resp, user.get(myURL, resp)
