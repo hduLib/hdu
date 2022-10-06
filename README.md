@@ -12,7 +12,7 @@
 - [x] cas统一认证
 - [x] 请假
 - [x] 课表
-- [] 省教育平台zjooc(processing)
+- [ ] 省教育平台zjooc(processing)
 
 ## 感谢
 
