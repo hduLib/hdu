@@ -9,6 +9,7 @@ import (
 
 func Get(req *http.Request, data interface{}) error {
 	resp, err := DefaultClient.Do(req)
+	defer resp.Body.Close()
 	if err != nil {
 		return err
 	}
@@ -27,6 +28,7 @@ func Get(req *http.Request, data interface{}) error {
 
 func Post(req *http.Request) ([]byte, error) {
 	resp, err := DefaultClient.Do(req)
+	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}

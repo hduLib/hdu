@@ -11,5 +11,7 @@ func TestLogin(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(user)
+	for _, v := range user.cookie {
+		t.Log(v.String())
+	}
 }
