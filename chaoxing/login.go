@@ -3,6 +3,7 @@ package chaoxing
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hduLib/hdu/chaoxing/utils"
 	"github.com/hduLib/hdu/net"
 	"io"
 	"net/http"
@@ -16,11 +17,11 @@ type loginResp struct {
 	Url    string `json:"url"`
 }
 
-func loginByPhoneAndPwd(phone string, passwd string) (*Cx, error) {
+func LoginByPhoneAndPwd(phone string, passwd string) (*Cx, error) {
 	payload := url.Values{}
 	payload.Set("fid", "1001")
-	payload.Set("uname", encryptByAES(phone))
-	payload.Set("password", encryptByAES(passwd))
+	payload.Set("uname", utils.EncryptByAES(phone))
+	payload.Set("password", utils.EncryptByAES(passwd))
 	payload.Set("refer", "http://i.mooc.chaoxing.com")
 	payload.Set("t", "true")
 	payload.Set("doubleFactorLogin", "0")
@@ -38,6 +39,10 @@ func loginByPhoneAndPwd(phone string, passwd string) (*Cx, error) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := net.DefaultClient.Do(req)
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("request fail:http code is %d", resp.StatusCode)
+	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
