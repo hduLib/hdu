@@ -2,7 +2,6 @@ package course
 
 import (
 	"github.com/hduLib/hdu/chaoxing/request"
-	"os"
 )
 
 type Brief struct {
@@ -22,11 +21,10 @@ type Brief struct {
 }
 
 // Detail returns detailed Course for further request
-func (cb *Brief) Detail() (*Course, error) {
-	resp, err := cb.req.Get(cb.url)
+func (br *Brief) Detail() (*Course, error) {
+	resp, err := br.req.Get(br.url)
 	if err != nil {
 		return nil, err
 	}
-	os.WriteFile("./test.html", resp, 0777)
-	return NewCourse(resp, cb)
+	return NewCourse(resp, br)
 }

@@ -25,18 +25,20 @@ func TestCourse(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	for _, v := range user.req.Cookies {
-		t.Logf("%s\n", v.String())
-	}
 	list, err := user.CourseList()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	c, err := list.Courses[0].Detail()
+	c, err := list.FindByName("数字电路设计").Detail()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Log(c)
+	workList, err := c.WorkList()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(workList)
 }

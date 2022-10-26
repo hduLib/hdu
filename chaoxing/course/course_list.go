@@ -16,7 +16,15 @@ type List struct {
 
 // todo
 func (l *List) FindByName(name string) *Brief {
-	return nil
+	var res *Brief
+	l.Each(func(course *Brief) bool {
+		if course.Title == name {
+			res = course
+			return false
+		}
+		return true
+	})
+	return res
 }
 
 func (l *List) Each(f func(course *Brief) bool) {

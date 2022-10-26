@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/hduLib/hdu/chaoxing/course/work"
 	"github.com/hduLib/hdu/chaoxing/request"
 	"github.com/hduLib/hdu/chaoxing/utils"
 )
@@ -60,4 +61,12 @@ func NewCourse(resp []byte, cb *Brief) (*Course, error) {
 		courseEvaluateUrl: utils.GetValueAttrBySelector(doc, "#courseEvaluateUrl"),
 		req:               cb.req,
 	}, nil
+}
+
+func (c *Course) WorkList() (*work.List, error) {
+	resp, err := c.req.Get(workListURL(c))
+	if err != nil {
+		return nil, err
+	}
+	return work.NewList(resp, c.req)
 }
