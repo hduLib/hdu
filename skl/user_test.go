@@ -2,13 +2,14 @@ package skl
 
 import (
 	"fmt"
+	"os"
 	"testing"
 	"time"
 )
 
-const (
-	id     = "11111111"
-	passwd = "11111111"
+var (
+	id     = os.Getenv("id")
+	passwd = os.Getenv("casPasswd")
 )
 
 func TestUser_Push(t *testing.T) {
