@@ -32,7 +32,7 @@ func main() {
 			log.Fatalln(err)
 		}
 		for _, v := range workList.Works {
-			if v.Status == "未交" {
+			if v.Status == "未交" && v.Time != "" {
 				fmt.Printf("[%s]%s---%s\n", course.Title, v.Title, v.Time)
 			}
 		}
