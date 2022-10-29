@@ -19,7 +19,7 @@ func TestLogin(t *testing.T) {
 	}
 }
 
-func TestCourse(t *testing.T) {
+func TestCourseAndExam(t *testing.T) {
 	user, err := LoginByPhoneAndPwd(phone, passwd)
 	if err != nil {
 		t.Error(err)
@@ -41,4 +41,10 @@ func TestCourse(t *testing.T) {
 		return
 	}
 	t.Log(workList)
+	examList, err := c.ExamList()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(examList)
 }

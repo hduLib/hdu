@@ -5,3 +5,7 @@ import "fmt"
 func workListURL(c *Course) string {
 	return fmt.Sprintf("https://mooc1.chaoxing.com/mooc2/work/list?courseId=%s&classId=%s&cpi=%s&ut=%s&enc=%s", c.CourseId, c.ClazzId, c.cpi, c.heardUt, c.workEnc)
 }
+
+func examListURL(c *Course) string {
+	return fmt.Sprintf("https://mooc1.chaoxing.com/exam-ans/mooc2/exam/exam-list?courseid=%s&clazzid=%s&cpi=%s&ut=%s&t=%s&enc=%s&openc=%s", c.CourseId, c.ClazzId, c.cpi, c.heardUt, c.t, c.enc, c.opEnc)
+}
