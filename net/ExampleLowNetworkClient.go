@@ -14,13 +14,11 @@ type LowNetworkClient struct {
 func NewLowNetworkClient(timeout time.Duration, retry int) *LowNetworkClient {
 	return &LowNetworkClient{
 		http.Client{
-			Timeout: timeout,
-			CheckRedirect: func(req *http.Request, via []*http.Request) error {
-				for _, v := range via[0].Cookies() {
-					req.AddCookie(v)
-				}
-				return nil
-			}}, retry}
+			Timeout:       timeout,
+			CheckRedirect: DefaultClient.(*http.Client).CheckRedirect,
+		},
+		retry,
+	}
 }
 
 // Do is rewritten to retry

@@ -1,6 +1,7 @@
 package net
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -9,12 +10,22 @@ type Client interface {
 }
 
 // DefaultClient do all requests, you can change it as you implement the interface.
+// you maybe puzzled about CheckRedirect is used instead of cookieJar.
+// it's because cookieJar is global, a cookie from one request may affect in another way
+// that never be considered.
 var DefaultClient Client = &http.Client{
-	// package chaoxing needs it for adding cookie to following request
-	// during redirecting. If you write your client, plz pay attention to it.
 	CheckRedirect: func(req *http.Request, via []*http.Request) error {
-		for _, v := range via[0].Cookies() {
-			req.AddCookie(v)
+		for _, v := range append(via[len(via)-1].Cookies(), req.Response.Cookies()...) {
+			ck, err := req.Cookie(v.Name)
+			if err != nil {
+				if errors.Is(err, http.ErrNoCookie) {
+					req.AddCookie(v)
+				} else {
+					return err
+				}
+				continue
+			}
+			ck.Value = v.Value
 		}
 		return nil
 	},
