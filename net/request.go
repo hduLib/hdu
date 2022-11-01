@@ -2,7 +2,6 @@ package net
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -18,7 +17,7 @@ func Get(req *http.Request, data interface{}) error {
 		return err
 	}
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("status code is %d:%s", resp.StatusCode, string(body))
+		return &ErrNotOk{resp.StatusCode, string(body)}
 	}
 	if err := json.Unmarshal(body, data); err != nil {
 		return err
@@ -37,7 +36,7 @@ func Post(req *http.Request) ([]byte, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("status code is %d:%s", resp.StatusCode, string(resBody))
+		return nil, &ErrNotOk{resp.StatusCode, string(resBody)}
 	}
 	return resBody, err
 }
