@@ -9,7 +9,7 @@ import (
 
 const casLoginURL = "https://api.hduhelp.com/login/direct/cas?clientID=healthcheckin&redirect=https://healthcheckin.hduhelp.com/#/auth"
 
-var tokenRegexp = regexp.MustCompile("https://healthcheckin.hduhelp.com/\\?auth=([0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})")
+var tokenRegexp = regexp.MustCompile("https://healthcheckin.hduhelp.com/\\?auth=([\\da-z]{8}-[\\da-z]{4}-[\\da-z]{4}-[\\da-z]{4}-[\\da-z]{12})")
 
 func (h *Health) LoginWithCas(user, passwd string) error {
 
