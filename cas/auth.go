@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -26,13 +26,13 @@ func GenLoginReq(URL, user, passwd string) (*http.Request, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		reason, err := ioutil.ReadAll(resp.Body)
+		reason, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return nil, fmt.Errorf("fail to read body: %v", err)
 		}
 		return nil, fmt.Errorf("fail to get lt and excution: %s", string(reason))
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
