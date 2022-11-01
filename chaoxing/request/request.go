@@ -48,7 +48,7 @@ func (r *Request) Get(url string) ([]byte, error) {
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Request fail:http status code is %d", resp.StatusCode)
+		return nil, fmt.Errorf("request fail:http status code is %d", resp.StatusCode)
 	}
 	return io.ReadAll(resp.Body)
 }
