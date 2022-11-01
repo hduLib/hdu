@@ -12,7 +12,7 @@ var phone = os.Getenv("phone")
 var passwd = os.Getenv("passwd")
 
 func main() {
-	user, err := chaoxing.LoginByPhoneAndPwd(phone, passwd)
+	user, err := chaoxing.LoginWithPhoneAndPwd(phone, passwd)
 	if err != nil {
 		log.Fatalln(err)
 		return

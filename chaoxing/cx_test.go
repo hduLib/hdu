@@ -13,7 +13,7 @@ var id = os.Getenv("id")
 var casPasswd = os.Getenv("casPasswd")
 
 func TestLogin(t *testing.T) {
-	user, err := LoginByPhoneAndPwd(phone, passwd)
+	user, err := LoginWithPhoneAndPwd(phone, passwd)
 	if err != nil {
 		t.Error(err)
 		return
@@ -40,7 +40,7 @@ func TestLoginWithCas(t *testing.T) {
 }
 
 func TestCourseAndExam(t *testing.T) {
-	user, err := LoginByPhoneAndPwd(phone, passwd)
+	user, err := LoginWithPhoneAndPwd(phone, passwd)
 	if err != nil {
 		t.Error(err)
 		return
