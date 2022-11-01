@@ -7,6 +7,7 @@ import (
 
 const (
 	fanyaLoginURL = "http://passport2.chaoxing.com/fanyalogin"
+	ssoLoginURL   = "https://cas.hdu.edu.cn/cas/login?service=http://hdu.fanya.chaoxing.com/sso/hdu"
 )
 
 func courseListURL() string {

@@ -3,6 +3,7 @@ package chaoxing
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hduLib/hdu/cas"
 	"github.com/hduLib/hdu/chaoxing/utils"
 	"github.com/hduLib/hdu/net"
 	"io"
@@ -17,7 +18,7 @@ type loginResp struct {
 	Url    string `json:"url"`
 }
 
-func LoginByPhoneAndPwd(phone string, passwd string) (*Cx, error) {
+func LoginWithPhoneAndPwd(phone string, passwd string) (*Cx, error) {
 	payload := url.Values{}
 	payload.Set("fid", "1001")
 	payload.Set("uname", utils.EncryptByAES(phone))
@@ -55,4 +56,16 @@ func LoginByPhoneAndPwd(phone string, passwd string) (*Cx, error) {
 		return nil, fmt.Errorf("login fail:%s", lres.Msg)
 	}
 	return newUser(resp.Cookies()), nil
+}
+
+func LoginWithCas(user, passwd string) (*Cx, error) {
+	req, err := cas.GenLoginReq(ssoLoginURL, user, passwd)
+	if err != nil {
+		return nil, fmt.Errorf("fail to gen login request:%v", err)
+	}
+	resp, err := net.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	return newUser(resp.Request.Cookies()), nil
 }
