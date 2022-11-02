@@ -10,7 +10,8 @@ const (
 type Brief struct {
 	url   string
 	Title string
-	Time  string
+	//todo: 解析到time.Duration 或解析为截止时间time.Time
+	Time string
 	//待做、已完成
 	Status string
 	req    *request.Request
