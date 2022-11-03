@@ -68,3 +68,28 @@ func TestCourseAndExam(t *testing.T) {
 	}
 	t.Log(examList)
 }
+
+func TestWork_Detail(t *testing.T) {
+	user, err := LoginWithPhoneAndPwd(phone, passwd)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	list, err := user.CourseList()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	c, err := list.FindByName("计算机平面动画设计与制作").Detail()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	workList, err := c.WorkList()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	wk := workList.Works[0].Detail()
+	fmt.Println(wk)
+}

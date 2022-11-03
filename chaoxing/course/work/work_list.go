@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hduLib/hdu/chaoxing/request"
+	"github.com/hduLib/hdu/chaoxing/utils"
 	"log"
 	"strings"
 )
@@ -26,7 +27,7 @@ func NewList(resp []byte, req *request.Request) (*List, error) {
 		list.Works = append(list.Works, Brief{
 			url:    url,
 			Title:  selection.Find(".overHidden2").Contents().Text(),
-			Time:   strings.TrimSpace(selection.Find(".time").Contents().Text()),
+			Time:   utils.ParseLeftTime2Deadline(strings.TrimSpace(selection.Find(".time").Contents().Text())),
 			Status: selection.Find(".status").Contents().Text(),
 			req:    req,
 		})

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hduLib/hdu/chaoxing/request"
+	"github.com/hduLib/hdu/chaoxing/utils"
 	"strings"
 )
 
@@ -41,7 +42,7 @@ func NewList(resp []byte, req *request.Request, cpi, classId string) (*List, err
 		list.Exams = append(list.Exams, Brief{
 			url:    url,
 			Title:  selection.Find(".overHidden2").Contents().Text(),
-			Time:   strings.TrimSpace(selection.Find(".time").Contents().Text()),
+			Time:   utils.ParseLeftTime2Deadline(strings.TrimSpace(selection.Find(".time").Contents().Text())),
 			Status: status,
 			req:    req,
 		})

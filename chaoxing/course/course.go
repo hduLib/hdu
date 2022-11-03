@@ -65,7 +65,7 @@ func NewCourse(resp []byte, cb *Brief) (*Course, error) {
 }
 
 func (c *Course) WorkList() (*work.List, error) {
-	resp, err := c.req.Get(workListURL(c))
+	resp, err := c.req.Get(c.workListURL())
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (c *Course) WorkList() (*work.List, error) {
 }
 
 func (c *Course) ExamList() (*exam.List, error) {
-	resp, err := c.req.Get(examListURL(c))
+	resp, err := c.req.Get(c.examListURL())
 	if err != nil {
 		return nil, err
 	}
