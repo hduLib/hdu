@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/hduLib/hdu/chaoxing/course/chapter"
 	"github.com/hduLib/hdu/chaoxing/course/exam"
 	"github.com/hduLib/hdu/chaoxing/course/work"
 	"github.com/hduLib/hdu/chaoxing/request"
@@ -78,4 +79,12 @@ func (c *Course) ExamList() (*exam.List, error) {
 		return nil, err
 	}
 	return exam.NewList(resp, c.req, c.cpi, c.ClazzId)
+}
+
+func (c *Course) ChapterList() (*chapter.List, error) {
+	resp, err := c.req.Get(c.chapterListURL())
+	if err != nil {
+		return nil, err
+	}
+	return chapter.NewList(resp, c.req)
 }

@@ -50,7 +50,7 @@ func TestCourseAndExam(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	c, err := list.FindByName("数字电路设计").Detail()
+	c, err := list.FindByName("计算机平面动画设计与制作").Detail()
 	if err != nil {
 		t.Error(err)
 		return
@@ -92,4 +92,28 @@ func TestWork_Detail(t *testing.T) {
 	}
 	wk := workList.Works[0].Detail()
 	fmt.Println(wk)
+}
+
+func TestCourseChapter_NewList(t *testing.T) {
+	user, err := LoginWithPhoneAndPwd(phone, passwd)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	list, err := user.CourseList()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	c, err := list.FindByName("计算机平面动画设计与制作").Detail()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	chapter, err := c.ChapterList()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(chapter)
 }
