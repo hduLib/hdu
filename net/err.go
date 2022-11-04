@@ -7,6 +7,7 @@ type ErrNotOk struct {
 	Body       string
 }
 
+// for further err, do type assertion
 func (e *ErrNotOk) Error() string {
-	return fmt.Sprintf("status code is %d:%s", e.StatusCode, e.Body)
+	return fmt.Sprintf("status code is %d", e.StatusCode)
 }
