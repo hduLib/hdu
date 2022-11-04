@@ -2,7 +2,6 @@ package request
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/hduLib/hdu/net"
 	"io"
 	"net/http"
@@ -48,7 +47,11 @@ func (r *Request) Get(url string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("request fail:http status code is %d", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		return nil, &net.ErrNotOk{
+			StatusCode: resp.StatusCode,
+			Body:       string(body),
+		}
 	}
 	return io.ReadAll(resp.Body)
 }
