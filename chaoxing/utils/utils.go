@@ -39,7 +39,7 @@ func GetValueAttrBySelector(doc toFind, sel string) string {
 func ParseLeftTime2Deadline(t string) time.Time {
 	n := time.Now()
 	if len(t) < 2 {
-		return time.Time{}
+		return time.Unix(0, 0)
 	}
 	if strings.Contains(t, "小时") {
 		var hour, minute int

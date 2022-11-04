@@ -8,11 +8,11 @@ import (
 	"os"
 )
 
-var phone = os.Getenv("phone")
-var passwd = os.Getenv("passwd")
+var phone = os.Getenv("id")
+var passwd = os.Getenv("casPasswd")
 
 func main() {
-	user, err := chaoxing.LoginWithPhoneAndPwd(phone, passwd)
+	user, err := chaoxing.LoginWithCas(phone, passwd)
 	if err != nil {
 		log.Fatalln(err)
 		return
@@ -32,7 +32,7 @@ func main() {
 			log.Fatalln(err)
 		}
 		for _, v := range workList.Works {
-			if v.Status == "未交" && v.Time != "" {
+			if v.Status == "未交" && v.Time.Unix() != 0 {
 				fmt.Printf("[%s作业]%s---%s\n", course.Title, v.Title, v.Time)
 			}
 		}
