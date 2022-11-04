@@ -43,10 +43,10 @@ func (r *Request) Get(url string) ([]byte, error) {
 		return nil, err
 	}
 	resp, err := net.DefaultClient.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("request fail:http status code is %d", resp.StatusCode)
 	}
