@@ -1,6 +1,7 @@
 package chaoxing
 
 import (
+	"fmt"
 	"github.com/hduLib/hdu/chaoxing/course"
 	"github.com/hduLib/hdu/chaoxing/request"
 	"net/http"
@@ -20,5 +21,8 @@ func (cx *Cx) CourseList() (*course.List, error) {
 		return nil, err
 	}
 	list, err := course.NewCourseList(resp, cx.req)
+	if err != nil {
+		return nil, fmt.Errorf("fail to parse courselist:%v", err)
+	}
 	return list, nil
 }
