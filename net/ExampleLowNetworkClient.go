@@ -1,6 +1,7 @@
 package net
 
 import (
+	"errors"
 	"net/http"
 	"time"
 )
@@ -14,8 +15,22 @@ type LowNetworkClient struct {
 func NewLowNetworkClient(timeout time.Duration, retry int) *LowNetworkClient {
 	return &LowNetworkClient{
 		http.Client{
-			Timeout:       timeout,
-			CheckRedirect: DefaultClient.(*http.Client).CheckRedirect,
+			Timeout: timeout,
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				for _, v := range append(via[len(via)-1].Cookies(), req.Response.Cookies()...) {
+					ck, err := req.Cookie(v.Name)
+					if err != nil {
+						if errors.Is(err, http.ErrNoCookie) {
+							req.AddCookie(v)
+						} else {
+							return err
+						}
+						continue
+					}
+					ck.Value = v.Value
+				}
+				return nil
+			},
 		},
 		retry,
 	}
