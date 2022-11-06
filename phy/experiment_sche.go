@@ -17,6 +17,9 @@ type ExperSche struct {
 
 // TODO: finish me
 func GetExperimentSche() {
+	if !isSignedIn {
+		return
+	}
 }
 
 func getContent() {
@@ -26,7 +29,7 @@ func getContent() {
 	agent.Header.Set("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
 	agent.Header.Set("Cache-Control", "max-age=0")
 	agent.Header.Set("Connection", "keep-alive")
-	agent.Header.Set("Cookie", "clientlanguage=zh_CN; " /*TODO: set JSESSIONID*/)
+	agent.Header.Set("Cookie", "clientlanguage=zh_CN; "+jSessionId)
 	agent.Header.Set("Referer", "http://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx")
 	agent.Header.Set("Upgrade-Insecure-Requests", "1")
 	agent.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36")

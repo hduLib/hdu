@@ -2,7 +2,6 @@ package ocr
 
 import (
 	"encoding/base64"
-	"errors"
 	"io"
 	"log"
 )
@@ -19,15 +18,23 @@ func RecognizeWithType(ocrType YunmaOCRType, image io.Reader) (string, error) {
 	case Common:
 		return commonVerify(imgbase64)
 	case Slide:
+		return slideVerify(imgbase64)
 	case SinSlide:
+		return sinSlideVerify(imgbase64)
 	case TrafficSlide:
+		return trafficSlideVerify(imgbase64)
 	case Click:
+		return clickVerify(imgbase64)
 	case Rotate:
+		return rotateVerify(imgbase64)
 	case Google:
+		return googleVerify(imgbase64)
 	case Hcaptcha:
+		return hcaptchaVerify(imgbase64)
 	case FunCaptcha:
+		return funCaptchaVerify(imgbase64)
 	}
-	return "", errors.New("unsupported ocr type")
+	return "", ErrUnsupportOCRType
 }
 
 type YunmaOCRType int

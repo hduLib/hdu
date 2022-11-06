@@ -92,3 +92,37 @@ func commonVerify(image string) (string, error) {
 	}
 	return commonTypeResp.Data.Data, nil
 }
+
+var ErrUnsupportOCRType = errors.New("ocr type unsupport")
+
+func slideVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
+
+func sinSlideVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
+
+func trafficSlideVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
+
+func clickVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
+
+func rotateVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
+
+func googleVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
+
+func hcaptchaVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
+
+func funCaptchaVerify(image string) (string, error) {
+	return "", ErrUnsupportOCRType
+}
