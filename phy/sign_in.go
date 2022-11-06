@@ -10,7 +10,12 @@ import (
 	"github.com/parnurzeal/gorequest"
 )
 
-func Login(username, password string) error {
+var (
+	isSignedIn = false
+	jSessionId = ""
+)
+
+func SignIn(username, password string) error {
 	// encode username, password
 	encodedUname, encodedPasswd :=
 		base64.StdEncoding.EncodeToString(convert.ToBytes(username)),
@@ -38,12 +43,9 @@ func Login(username, password string) error {
 	requestWithPayload(payload)
 	log.Println("login success!")
 
-	return nil
-}
+	isSignedIn = true
 
-type LoginResponse struct {
-	Ok    bool  `json:"result"`
-	Count int64 `json:"count"`
+	return nil
 }
 
 // payload: `returnUrl=%2F&username=<username>&password=<password>&captcha=<ocr_result>&x=0&y=0`
@@ -60,10 +62,19 @@ func requestWithPayload(payload string) {
 	agent.Header.Set("Upgrade-Insecure-Requests", "1")
 	agent.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36")
 
-	resp, _, errs := agent.Post("http://phy.hdu.edu.cn/login.jspx").SendString(payload).End()
+	resp, _, errs :=
+		agent.Post("http://phy.hdu.edu.cn/login.jspx").SendString(payload).End()
 	if len(errs) != 0 {
 		log.Fatal(errs)
 	}
-	//TODO: futher use JSESSIONID
-	_ = resp // suppress unused error
+
+	// handle cookies
+	cookies := resp.Header["Set-Cookie"]
+	setJSessionId(cookies[1])
+}
+
+// set JSESSIONID
+func setJSessionId(cookie string) {
+	start, end := strings.Index(cookie, "="), strings.Index(cookie, ";")
+	jSessionId = cookie[start+1 : end]
 }

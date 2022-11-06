@@ -5,13 +5,11 @@ import (
 	"testing"
 )
 
-const Kib = 1024
-
 func TestGetCaptcha(t *testing.T) {
-	buf := make([]byte, 12*Kib)
+	buf := make([]byte, 2*4096)
 	n, _ := getCaptcha().Read(buf)
 	buf = buf[:n]
-	err := os.WriteFile("test.svl", buf, 0655)
+	err := os.WriteFile("captcha.svl", buf, 0655)
 	if err != nil {
 		t.FailNow()
 	}
