@@ -20,7 +20,6 @@ func SignIn(username, password string) error {
 	encodedUname, encodedPasswd :=
 		base64.StdEncoding.EncodeToString(convert.ToBytes(username)),
 		base64.StdEncoding.EncodeToString(convert.ToBytes(password))
-	_, _ = encodedUname, encodedPasswd
 
 	// construct payload
 	var builder strings.Builder
