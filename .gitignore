@@ -15,3 +15,11 @@
 # vendor/
 .idea/
 .run
+
+# Temp generated files
+*.svl
+
+# env
+.env
+.env.development
+.env.production
