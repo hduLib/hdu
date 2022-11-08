@@ -2,6 +2,7 @@ package chaoxing
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/hduLib/hdu/cas"
 	"github.com/hduLib/hdu/chaoxing/utils"
@@ -66,6 +67,16 @@ func LoginWithCas(user, passwd string) (*Cx, error) {
 	resp, err := net.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		return nil, &net.ErrNotOk{StatusCode: resp.StatusCode, Body: string(body)}
+	}
+	if resp.Request.URL.String() != ssoSuccessURL {
+		return nil, errors.New("invalid id or password")
 	}
 	return newUser(resp.Request.Cookies()), nil
 }
