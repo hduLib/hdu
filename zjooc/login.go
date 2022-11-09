@@ -20,6 +20,9 @@ func Login(account, password string) (*User, error) {
 		return nil, err
 	}
 	req, err := http.NewRequest(http.MethodPost, loginUrl, bytes.NewReader(b))
+	// UA:在浙学/2 CFNetwork/1390 Darwin/22.0.0
+	req.Header.Set("User-Agent", "%E5%9C%A8%E6%B5%99%E5%AD%A6/2 CFNetwork/1390 Darwin/22.0.0")
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	if err != nil {
 		return nil, err
 	}
@@ -30,6 +33,6 @@ func Login(account, password string) (*User, error) {
 		return nil, errors.New(gjson.Get(str, "message").String())
 	}
 	user := new(User)
-	user.openid = gjson.Get(str, "data").String()
+	user.openid = gjson.Get(str, "data.loginResult.openid").String()
 	return user, nil
 }

@@ -1,16 +1,14 @@
 package zjooc
 
-import "testing"
-
-const (
-	account  = "11111111"
-	password = "11111111"
+import (
+	"os"
+	"testing"
 )
 
 func TestLogin(t *testing.T) {
-	user, err := Login(account, password)
+	user, err := Login(os.Getenv("zjooc_account"), os.Getenv("zjooc_passwd"))
 	if err != nil {
-		t.Error(err)
+		t.Log(err)
 		return
 	}
 	t.Log(user.openid)
