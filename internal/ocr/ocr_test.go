@@ -6,10 +6,11 @@ import (
 	"testing"
 
 	ocr2 "github.com/hduLib/hdu/internal/ocr"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func TestOCR(t *testing.T) {
-	ocr2.SetToken("") // you should set your yunma token first
+	ocr2.SetToken(os.Getenv("TOKEN")) // you should set your yunma token first
 	res, err := ocr2.Parse(readInImage())
 	if err != nil {
 		t.Fatal(err)
