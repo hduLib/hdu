@@ -3,7 +3,7 @@ package skl
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hduLib/hdu/internal/client"
+	"github.com/hduLib/hdu/client"
 	"io"
 	"net/http"
 	"os"

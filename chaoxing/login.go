@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/hduLib/hdu/cas"
 	"github.com/hduLib/hdu/chaoxing/utils"
-	"github.com/hduLib/hdu/internal/client"
+	"github.com/hduLib/hdu/client"
 	"io"
 	"net/http"
 	"net/url"

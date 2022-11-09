@@ -3,7 +3,7 @@ package skl
 import (
 	"errors"
 	"github.com/hduLib/hdu/cas"
-	"github.com/hduLib/hdu/internal/client"
+	"github.com/hduLib/hdu/client"
 	"github.com/tidwall/gjson"
 	"io"
 	"net/http"

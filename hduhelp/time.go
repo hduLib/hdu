@@ -1,7 +1,7 @@
 package hduhelp
 
 import (
-	"github.com/hduLib/hdu/internal/client"
+	"github.com/hduLib/hdu/client"
 	"net/http"
 )
 

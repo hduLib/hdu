@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"github.com/hduLib/hdu/internal/client"
+	"github.com/hduLib/hdu/client"
 	"io"
 	"net/http"
 	"net/url"

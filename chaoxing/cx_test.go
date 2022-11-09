@@ -2,7 +2,7 @@ package chaoxing
 
 import (
 	"fmt"
-	"github.com/hduLib/hdu/internal/client"
+	"github.com/hduLib/hdu/client"
 	"os"
 	"testing"
 )

@@ -2,7 +2,7 @@ package request
 
 import (
 	"bytes"
-	"github.com/hduLib/hdu/internal/client"
+	"github.com/hduLib/hdu/client"
 	"io"
 	"net/http"
 )
