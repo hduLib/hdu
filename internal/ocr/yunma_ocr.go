@@ -93,7 +93,6 @@ func commonVerify(image string) (string, error) {
 	return commonTypeResp.Data.Data, nil
 }
 
-var ErrUnsupportOCRType = errors.New("ocr type unsupport")
 
 func slideVerify(image string) (string, error) {
 	return "", ErrUnsupportOCRType

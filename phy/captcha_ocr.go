@@ -34,7 +34,7 @@ func getCaptchaContent() string {
 
 	// ocr
 	rd := bytes.NewReader(b)
-	captchaContent, err := ocr.RecognizeWithType(ocr.Common, rd)
+	captchaContent, err := ocr.Parse(rd)
 	if err != nil {
 		log.Fatal(err)
 	}

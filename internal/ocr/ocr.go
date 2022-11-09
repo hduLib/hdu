@@ -2,40 +2,68 @@ package ocr
 
 import (
 	"encoding/base64"
+	"errors"
 	"io"
 	"log"
+
+	"github.com/hduLib/hdu/internal/utils/convert"
 )
 
-// RecognizeWithType takes an ocr type and an image reader, returns the string
+var DefaultType = Common
+
+func Parse(captcha interface{}) (string, error) {
+	return recognizeWithType(DefaultType, captcha)
+}
+
+// recognizeWithType takes an ocr type and an image reader, returns the string
 // typed ocr result along with a possible error.
-func RecognizeWithType(ocrType YunmaOCRType, image io.Reader) (string, error) {
-	imgdata, err := io.ReadAll(image)
-	if err != nil {
-		log.Fatal(err)
+func recognizeWithType(ocrType YunmaOCRType, captcha interface{}) (string, error) {
+	var bs64captcha string
+
+	// base64 encoded
+	switch captcha := captcha.(type) {
+	case []byte:
+		bs64captcha = base64.StdEncoding.EncodeToString(captcha)
+	case string:
+		bs64captcha = base64.StdEncoding.EncodeToString(convert.ToBytes(captcha))
+	case io.Reader:
+		data, err := io.ReadAll(captcha)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bs64captcha = base64.StdEncoding.EncodeToString(data)
+	default:
+		return "", ErrUnsupportCaptchaType
 	}
-	imgbase64 := base64.StdEncoding.EncodeToString(imgdata)
+
+	// do ocr
 	switch ocrType {
 	case Common:
-		return commonVerify(imgbase64)
+		return commonVerify(bs64captcha)
 	case Slide:
-		return slideVerify(imgbase64)
+		return slideVerify(bs64captcha)
 	case SinSlide:
-		return sinSlideVerify(imgbase64)
+		return sinSlideVerify(bs64captcha)
 	case TrafficSlide:
-		return trafficSlideVerify(imgbase64)
+		return trafficSlideVerify(bs64captcha)
 	case Click:
-		return clickVerify(imgbase64)
+		return clickVerify(bs64captcha)
 	case Rotate:
-		return rotateVerify(imgbase64)
+		return rotateVerify(bs64captcha)
 	case Google:
-		return googleVerify(imgbase64)
+		return googleVerify(bs64captcha)
 	case Hcaptcha:
-		return hcaptchaVerify(imgbase64)
+		return hcaptchaVerify(bs64captcha)
 	case FunCaptcha:
-		return funCaptchaVerify(imgbase64)
+		return funCaptchaVerify(bs64captcha)
 	}
 	return "", ErrUnsupportOCRType
 }
+
+var (
+	ErrUnsupportOCRType     = errors.New("ocr type is unsupported")
+	ErrUnsupportCaptchaType = errors.New("ocr parse arg type is unsupported")
+)
 
 type YunmaOCRType int
 

@@ -10,7 +10,7 @@ import (
 
 func TestOCR(t *testing.T) {
 	ocr2.SetToken("") // you should set your yunma token first
-	res, err := ocr2.RecognizeWithType(ocr2.Common, readInImage())
+	res, err := ocr2.Parse(readInImage())
 	if err != nil {
 		t.Fatal(err)
 	}
