@@ -1,10 +1,11 @@
 package phy
 
 import (
-	"github.com/hduLib/hdu/internal/ocr"
 	"log"
 	"os"
 	"testing"
+
+	"github.com/hduLib/hdu/internal/ocr"
 
 	_ "github.com/joho/godotenv/autoload"
 )

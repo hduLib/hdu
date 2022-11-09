@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/hduLib/hdu/client"
-	"github.com/hduLib/hdu/utils/convert"
+	"github.com/hduLib/hdu/internal/utils/convert"
 )
 
 var (

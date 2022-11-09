@@ -1,8 +1,9 @@
 package hduhelp
 
 import (
-	"github.com/hduLib/hdu/client"
 	"net/http"
+
+	"github.com/hduLib/hdu/client"
 )
 
 func Time() (*TimeResp, error) {
