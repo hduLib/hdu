@@ -3,7 +3,7 @@ package skl
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/hduLib/hdu/net"
+	"github.com/hduLib/hdu/internal/client"
 	"net/http"
 )
 
@@ -43,7 +43,7 @@ func (user *User) get(url string, data interface{}) error {
 	if err != nil {
 		return err
 	}
-	return net.Get(req, data)
+	return client.Get(req, data)
 }
 
 func (user *User) post(url string, data interface{}) ([]byte, error) {
@@ -55,5 +55,5 @@ func (user *User) post(url string, data interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return net.Post(req)
+	return client.Post(req)
 }

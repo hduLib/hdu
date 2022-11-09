@@ -3,7 +3,7 @@ package skl
 import (
 	"errors"
 	"github.com/hduLib/hdu/cas"
-	"github.com/hduLib/hdu/net"
+	"github.com/hduLib/hdu/internal/client"
 	"github.com/tidwall/gjson"
 	"io"
 	"net/http"
@@ -14,7 +14,7 @@ func Login(id, password string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := net.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-package net
+package client
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 )
 
 func Get(req *http.Request, data interface{}) error {
-	resp, err := DefaultClient.Do(req)
+	resp, err := Do(req)
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func Get(req *http.Request, data interface{}) error {
 }
 
 func Post(req *http.Request) ([]byte, error) {
-	resp, err := DefaultClient.Do(req)
+	resp, err := Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -39,4 +39,8 @@ func Post(req *http.Request) ([]byte, error) {
 		return nil, &ErrNotOk{resp.StatusCode, string(resBody)}
 	}
 	return resBody, err
+}
+
+func Do(req *http.Request) (*http.Response, error) {
+	return DefaultClient.Do(req)
 }

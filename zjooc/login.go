@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/hduLib/hdu/net"
+	"github.com/hduLib/hdu/internal/client"
 	"github.com/tidwall/gjson"
 	"net/http"
 )
@@ -23,7 +23,7 @@ func Login(account, password string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	body, err := net.Post(req)
+	body, err := client.Post(req)
 	str := string(body)
 	success := gjson.Get(str, "success").Bool()
 	if !success {

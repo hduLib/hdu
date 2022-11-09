@@ -1,16 +1,15 @@
 package ocr_test
 
 import (
+	ocr2 "github.com/hduLib/hdu/internal/ocr"
 	"io"
 	"os"
 	"testing"
-
-	"github.com/hduLib/hdu/utils/ocr"
 )
 
 func TestOCR(t *testing.T) {
-	ocr.SetToken("") // you should set your yunma token first
-	res, err := ocr.RecognizeWithType(ocr.Common, readInImage())
+	ocr2.SetToken("") // you should set your yunma token first
+	res, err := ocr2.RecognizeWithType(ocr2.Common, readInImage())
 	if err != nil {
 		t.Fatal(err)
 	}

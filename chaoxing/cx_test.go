@@ -2,7 +2,7 @@ package chaoxing
 
 import (
 	"fmt"
-	"github.com/hduLib/hdu/net"
+	"github.com/hduLib/hdu/internal/client"
 	"os"
 	"testing"
 )
@@ -26,7 +26,7 @@ func TestLogin(t *testing.T) {
 func TestLoginWithCas(t *testing.T) {
 	user, err := LoginWithCas(id, casPasswd)
 	if err != nil {
-		if err, ok := err.(*net.ErrNotOk); ok {
+		if err, ok := err.(*client.ErrNotOk); ok {
 			fmt.Println(err.Body)
 		} else {
 			t.Error(err)

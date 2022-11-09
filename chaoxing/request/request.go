@@ -2,7 +2,7 @@ package request
 
 import (
 	"bytes"
-	"github.com/hduLib/hdu/net"
+	"github.com/hduLib/hdu/internal/client"
 	"io"
 	"net/http"
 )
@@ -41,14 +41,14 @@ func (r *Request) Get(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := net.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return nil, &net.ErrNotOk{
+		return nil, &client.ErrNotOk{
 			StatusCode: resp.StatusCode,
 			Body:       string(body),
 		}
@@ -61,5 +61,5 @@ func (r *Request) Post(url string, data []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return net.Post(req)
+	return client.Post(req)
 }

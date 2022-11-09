@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"github.com/hduLib/hdu/internal/client"
 	"io"
 	"net/http"
 	"net/url"
@@ -21,7 +22,7 @@ func GenLoginReq(URL, user, passwd string) (*http.Request, error) {
 	//获取lt和execution
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36")
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}

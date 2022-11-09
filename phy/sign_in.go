@@ -2,11 +2,11 @@ package phy
 
 import (
 	"encoding/base64"
+	"github.com/hduLib/hdu/internal/ocr"
 	"log"
 	"strings"
 
 	"github.com/hduLib/hdu/utils/convert"
-	"github.com/hduLib/hdu/utils/ocr"
 	"github.com/parnurzeal/gorequest"
 )
 

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/hduLib/hdu/cas"
 	"github.com/hduLib/hdu/chaoxing/utils"
-	"github.com/hduLib/hdu/net"
+	"github.com/hduLib/hdu/internal/client"
 	"io"
 	"net/http"
 	"net/url"
@@ -40,7 +40,7 @@ func LoginWithPhoneAndPwd(phone string, passwd string) (*Cx, error) {
 	req.Header.Set("X-Requested-With", "XMLHttpRequest")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := net.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("request fail:http code is %d", resp.StatusCode)
 	}
@@ -64,7 +64,7 @@ func LoginWithCas(user, passwd string) (*Cx, error) {
 	if err != nil {
 		return nil, fmt.Errorf("fail to gen login request:%v", err)
 	}
-	resp, err := net.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func LoginWithCas(user, passwd string) (*Cx, error) {
 		if err != nil {
 			return nil, err
 		}
-		return nil, &net.ErrNotOk{StatusCode: resp.StatusCode, Body: string(body)}
+		return nil, &client.ErrNotOk{StatusCode: resp.StatusCode, Body: string(body)}
 	}
 	if resp.Request.URL.String() != ssoSuccessURL {
 		return nil, errors.New("invalid id or password")

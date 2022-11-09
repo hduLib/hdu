@@ -3,7 +3,7 @@ package skl
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hduLib/hdu/net"
+	"github.com/hduLib/hdu/internal/client"
 	"io"
 	"net/http"
 	"os"
@@ -41,7 +41,7 @@ func (user *User) Upload(file string) (*OSSFile, error) {
 		return nil, err
 	}
 	user.addHeaderToReq(req)
-	resp, err := net.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (user *User) Upload(file string) (*OSSFile, error) {
 		return nil, err
 	}
 	req.Header.Add("Content-Type", res.ContentType)
-	resp, err = net.DefaultClient.Do(req)
+	resp, err = client.Do(req)
 	if err != nil {
 		return nil, err
 	}
