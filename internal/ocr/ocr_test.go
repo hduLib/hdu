@@ -1,10 +1,11 @@
 package ocr_test
 
 import (
-	ocr2 "github.com/hduLib/hdu/internal/ocr"
 	"io"
 	"os"
 	"testing"
+
+	ocr2 "github.com/hduLib/hdu/internal/ocr"
 )
 
 func TestOCR(t *testing.T) {
@@ -14,6 +15,10 @@ func TestOCR(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log("ocr result:", res)
+	if res != "vyza" {
+		t.Logf(`ocr error, expect "vyza", found %s`, res)
+		t.FailNow()
+	}
 }
 
 func readInImage() io.Reader {

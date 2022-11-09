@@ -1,9 +1,15 @@
 package phy
 
 import (
-	"github.com/parnurzeal/gorequest"
+	"errors"
+	"io"
+	"log"
+	"net/http"
+
+	"github.com/hduLib/hdu/client"
 )
 
+// ExperSche 具体实验安排
 type ExperSche struct {
 	Id          int    // ID
 	ExperName   string // 实验名称
@@ -15,24 +21,44 @@ type ExperSche struct {
 	Grade       int    // 成绩
 }
 
-// TODO: finish me
-func GetExperimentSche() {
-	if !isSignedIn {
-		return
+var (
+	ErrNoLogin = errors.New("you are not logined before get experiments schedules")
+)
+
+// GetExperimentSche 返回所有实验安排
+func GetExperimentSche() ([]*ExperSche, error) {
+	if !isLogined || jSessionId == "" {
+		return nil, ErrNoLogin
 	}
+	return getExperimentSche(), nil
 }
 
-func getContent() {
-	agent := gorequest.New()
+func getExperimentSche() []*ExperSche {
+	req, _ := http.NewRequest(http.MethodGet, "http://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx", nil)
 
-	agent.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-	agent.Header.Set("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
-	agent.Header.Set("Cache-Control", "max-age=0")
-	agent.Header.Set("Connection", "keep-alive")
-	agent.Header.Set("Cookie", "clientlanguage=zh_CN; "+jSessionId)
-	agent.Header.Set("Referer", "http://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx")
-	agent.Header.Set("Upgrade-Insecure-Requests", "1")
-	agent.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36")
+	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
+	req.Header.Set("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
+	req.Header.Set("Cache-Control", "max-age=0")
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Cookie", "clientlanguage=zh_CN; "+jSessionId)
+	req.Header.Set("Referer", "http://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx")
+	req.Header.Set("Upgrade-Insecure-Requests", "1")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36")
 
-	agent.Get("http://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx").EndBytes()
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return deserialize(b)
+}
+
+// TODO: finish me
+func deserialize(b []byte) []*ExperSche {
+	return nil
 }
