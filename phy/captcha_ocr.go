@@ -10,7 +10,7 @@ import (
 	"github.com/hduLib/hdu/internal/ocr"
 )
 
-func getCaptchaContent() string {
+func getCaptchaContent() (string, error) {
 	req, _ := http.NewRequest(http.MethodGet, "http://phy.hdu.edu.cn/captcha.svl", nil)
 
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
@@ -22,14 +22,13 @@ func getCaptchaContent() string {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
-	log.Printf("%v", resp)
 
 	// read in image
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	// ocr
@@ -39,5 +38,5 @@ func getCaptchaContent() string {
 		log.Fatal(err)
 	}
 
-	return captchaContent
+	return captchaContent, nil
 }

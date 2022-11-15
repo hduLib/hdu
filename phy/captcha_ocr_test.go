@@ -5,7 +5,8 @@ import (
 )
 
 func TestGetCaptchaContent(t *testing.T) {
-	if getCaptchaContent() == "" {
-		t.FailNow()
+	_, err := getCaptchaContent()
+	if err != nil {
+		t.Fatal(err)
 	}
 }

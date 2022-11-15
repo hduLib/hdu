@@ -1,7 +1,6 @@
 package phy
 
 import (
-	"log"
 	"os"
 	"testing"
 
@@ -15,8 +14,12 @@ func TestLogin(t *testing.T) {
 	ocr.SetToken(os.Getenv("TOKEN"))
 	err := Login(os.Getenv("USERNAME"), os.Getenv("PASSWORD"))
 	if err != nil {
-		log.Println(err)
-		t.FailNow()
+		t.Fatal(err)
 	}
-	log.Println(jSessionId)
+	if JSessionId == "" {
+		t.Fatal("no JSESSIONID")
+	}
+	if !isLogined {
+		t.Fatal("login failed")
+	}
 }
