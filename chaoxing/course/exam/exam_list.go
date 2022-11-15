@@ -21,7 +21,11 @@ func NewList(resp []byte, req *request.Request, cpi, classId string) (*List, err
 	var list List
 	doc.Find("li").Each(func(i int, selection *goquery.Selection) {
 		status := selection.Find(".status").Contents().Text()
-		onclick := selection.Contents().Get(1).Attr[1].Val
+		onclickNode := selection.Contents().Get(1)
+		if len(onclickNode.Attr) < 2 {
+			return
+		}
+		onclick := onclickNode.Attr[1].Val
 		var courseId, tId, paperId, lookpaperEnc, url string
 		if len(onclick) > 10 {
 			subs := strings.Split(onclick[8:len(onclick)-2], ",")

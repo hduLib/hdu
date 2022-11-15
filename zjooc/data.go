@@ -123,18 +123,20 @@ type Course struct {
 }
 
 type Paper struct {
-	PublishTime   string  `json:"publishTime"`
-	EndTime       string  `json:"endTime"`
-	ClassId       string  `json:"classId"`
-	PaperId       string  `json:"paperId"`
-	PaperName     string  `json:"paperName"`
-	FinalScore    float64 `json:"finalScore"`
-	TotalScore    float64 `json:"totalScore"`
-	CourseId      string  `json:"courseId"`
-	CourseName    string  `json:"courseName"`
-	ReviewStatus  int     `json:"reviewStatus"`
-	ProcessStatus int     `json:"processStatus"`
-	ScorePropor   string  `json:"scorePropor"`
-	PaperStyle    int     `json:"paperStyle"`
-	PaperArchive  int     `json:"paperArchive"`
+	PublishTime string  `json:"publishTime"`
+	EndTime     string  `json:"endTime"`
+	ClassId     string  `json:"classId"`
+	PaperId     string  `json:"paperId"`
+	PaperName   string  `json:"paperName"`
+	FinalScore  float64 `json:"finalScore"`
+	TotalScore  float64 `json:"totalScore"`
+	CourseId    string  `json:"courseId"`
+	CourseName  string  `json:"courseName"`
+	// 0 沒做, 1 做了
+	ReviewStatus int `json:"reviewStatus"`
+	// 0 开放, 2 截止, 4 应该是截止了但是没交
+	ProcessStatus int    `json:"processStatus"`
+	ScorePropor   string `json:"scorePropor"`
+	PaperStyle    int    `json:"paperStyle"`
+	PaperArchive  int    `json:"paperArchive"`
 }
