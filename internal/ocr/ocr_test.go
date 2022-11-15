@@ -17,8 +17,7 @@ func TestOCR(t *testing.T) {
 	}
 	t.Log("ocr result:", res)
 	if res != "vyza" {
-		t.Logf(`ocr error, expect "vyza", found %s`, res)
-		t.FailNow()
+		t.Fatalf(`ocr error, expect "vyza", found %s`, res)
 	}
 }
 
