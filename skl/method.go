@@ -1,6 +1,9 @@
 package skl
 
-import "time"
+import (
+	"github.com/hduLib/hdu/skl/schema"
+	"time"
+)
 
 // HasPush check if HasPushed on the day defined by t
 // notice while push logs have multi pages,it only checks one.
@@ -12,4 +15,8 @@ func (r *PushLogResp) HasPush(t time.Time) bool {
 		}
 	}
 	return false
+}
+
+func (c *Course) DecodeSchema() (schema.Schema, error) {
+	return schema.Decode(c.CourseSchema)
 }
