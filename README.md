@@ -1,6 +1,14 @@
+<p align="center">
+<img src="https://avatars.githubusercontent.com/u/111285224?s=200&v=4" width="200" height="200" alt="hduLib">
+</p>
+
+<div align="center">
+
 # hdu
 
-这个库实现了与杭电学生经常使用的网站之间的交互，使用这个库可以非常轻松地调取需要的各种信息，自动化地进行各种交互。
+✨这个库实现了与杭电学生经常使用的网站之间的交互，使用这个库可以非常轻松地调取需要的各种信息，自动化地进行各种交互✨
+
+</div>
 
 ## 声明
 
