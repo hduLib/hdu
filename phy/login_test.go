@@ -9,17 +9,21 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
-func TestLogin(t *testing.T) {
-	// set your own token and you username & password
+var studentId, password string
+
+func TestMain(m *testing.M) {
 	ocr.SetToken(os.Getenv("TOKEN"))
-	err := Login(os.Getenv("USERNAME"), os.Getenv("PASSWORD"))
+	studentId = os.Getenv("USERNAME")
+	password = os.Getenv("PASSWORD")
+	m.Run()
+}
+
+func TestLogin(t *testing.T) {
+	err := Login(studentId, password)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if JSessionId == "" {
 		t.Fatal("no JSESSIONID")
-	}
-	if !isLogined {
-		t.Fatal("login failed")
 	}
 }
