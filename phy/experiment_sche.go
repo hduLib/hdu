@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/hduLib/hdu/client"
@@ -33,26 +35,30 @@ func GetExperimentSche() (*ExperSche, error) {
 	return getExperSches()
 }
 
-var (
-	CourseId   = "325"
-	SemesterNo = "202220231"
-)
-
 func getExperSches() (*ExperSche, error) {
-	data := strings.NewReader("queryCourseId=" + CourseId + "&semesterNo=" + SemesterNo + "&queryExperimentId=-1")
-	req, err := http.NewRequest("POST", "http://phy.hdu.edu.cn/phymember/v_mycourse_changed.jspx", data)
+	payload := buildExprSchePayload("325", "202220231", "-1")
+	req, err := http.NewRequest(http.MethodPost, "http://phy.hdu.edu.cn/phymember/v_mycourse_changed.jspx", strings.NewReader(payload))
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Accept", "application/json, text/javascript, */*")
-	req.Header.Set("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
-	req.Header.Set("Connection", "keep-alive")
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Cookie", "clientlanguage=zh_CN; JSESSIONID=FA33E279A1BF84C0AC18F22EE0DAF6B3")
-	req.Header.Set("Origin", "http://phy.hdu.edu.cn")
-	req.Header.Set("Referer", "http://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx")
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36")
-	req.Header.Set("X-Requested-With", "XMLHttpRequest")
+
+	{
+		req.Header.Set("authority", "phy.hdu.edu.cn")
+		req.Header.Set("accept", "application/json, text/javascript, */*")
+		req.Header.Set("accept-language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
+		req.Header.Set("content-type", "application/x-www-form-urlencoded")
+		req.Header.Set("cookie", "clientlanguage=zh_CN; JSESSIONID="+JSessionId)
+		req.Header.Set("origin", "https://phy.hdu.edu.cn")
+		req.Header.Set("referer", "https://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx")
+		req.Header.Set("sec-ch-ua", `"Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"`)
+		req.Header.Set("sec-ch-ua-mobile", "?0")
+		req.Header.Set("sec-ch-ua-platform", `"Windows"`)
+		req.Header.Set("sec-fetch-dest", "empty")
+		req.Header.Set("sec-fetch-mode", "cors")
+		req.Header.Set("sec-fetch-site", "same-origin")
+		req.Header.Set("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36")
+		req.Header.Set("x-requested-with", "XMLHttpRequest")
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -64,11 +70,21 @@ func getExperSches() (*ExperSche, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	res := new(ExperSche)
 	err = json.Unmarshal(b, res)
 	if err != nil {
+		log.Println(string(b))
 		return nil, err
 	}
 
 	return res, nil
+}
+
+func buildExprSchePayload(courseId, semesterNo, queryExperimentId string) string {
+	payload := make(url.Values, 3)
+	payload.Add("queryCourseId", courseId)
+	payload.Add("semesterNo", semesterNo)
+	payload.Add("queryExperimentId", queryExperimentId)
+	return payload.Encode()
 }
