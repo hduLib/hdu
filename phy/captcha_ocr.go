@@ -29,6 +29,9 @@ func getCaptchaContent() (string, error) {
 		return "", err
 	}
 
+	// get JSessionId when get captcha
+	setJSessionId(resp.Cookies())
+
 	// read in image
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -43,4 +46,14 @@ func getCaptchaContent() (string, error) {
 	}
 
 	return captchaContent, nil
+}
+
+func setJSessionId(cookies []*http.Cookie) {
+	for _, cookie := range cookies {
+		if cookie.Name != "JSESSIONID" {
+			continue
+		}
+		JSessionId = cookie.Value
+		return
+	}
 }

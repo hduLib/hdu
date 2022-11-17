@@ -2,9 +2,7 @@ package phy
 
 import (
 	"encoding/json"
-	"errors"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -23,10 +21,6 @@ type Experiment struct {
 	Text     string `json:"text"`
 }
 
-var (
-	ErrNoJSessionId = errors.New("JSessionId is needed")
-)
-
 // GetExperimentSche 返回所有实验安排
 func GetExperimentSche() (*ExperSche, error) {
 	if JSessionId == "" {
@@ -35,8 +29,15 @@ func GetExperimentSche() (*ExperSche, error) {
 	return getExperSches()
 }
 
+var (
+	CourseId          = "325"
+	SemesterNo        = "202220231"
+	QueryExperimentId = "-1"
+)
+
 func getExperSches() (*ExperSche, error) {
-	payload := buildExprSchePayload("325", "202220231", "-1")
+	payload := buildExprSchePayload(CourseId, SemesterNo, QueryExperimentId)
+
 	req, err := http.NewRequest(http.MethodPost, "http://phy.hdu.edu.cn/phymember/v_mycourse_changed.jspx", strings.NewReader(payload))
 	if err != nil {
 		return nil, err
@@ -74,7 +75,6 @@ func getExperSches() (*ExperSche, error) {
 	res := new(ExperSche)
 	err = json.Unmarshal(b, res)
 	if err != nil {
-		log.Println(string(b))
 		return nil, err
 	}
 
