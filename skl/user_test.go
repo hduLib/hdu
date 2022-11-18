@@ -31,6 +31,7 @@ func TestUser_PushLogs(t *testing.T) {
 		return
 	}
 	resp, err := skl.PushLogs()
+	t.Log(resp.Count)
 	if err != nil {
 		t.Error(err)
 		return
@@ -54,7 +55,7 @@ func TestUser_My(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	fmt.Println(resp.Status)
+	fmt.Println(resp)
 }
 
 func TestUser_Course(t *testing.T) {
