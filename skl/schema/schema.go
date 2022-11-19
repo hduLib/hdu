@@ -16,7 +16,9 @@ type schemaNode struct {
 
 type Schema []schemaNode
 
-var schemaReg = regexp.MustCompile(`星期([一二三四五六日])第(\d)-(\d)节{(.*)}`)
+var schemaReg = regexp.MustCompile(`星期([一二三四五六日])第(\d*)-(\d*)节{(.*)}`)
+var weeksReg = regexp.MustCompile(`(\d*)-(\d*)周(\((.)\))?`)
+
 var weekDayMapping = map[string]time.Weekday{
 	"一": time.Monday,
 	"二": time.Tuesday,
@@ -78,12 +80,34 @@ func decodeWeeks(str string) (weeks, error) {
 	var w weeks
 	for _, v := range ss {
 		if strings.Contains(v, "-") {
-			var begin, end int
-			_, err := fmt.Sscanf(v, "%d-%d周", &begin, &end)
+			var status int
+			matches := weeksReg.FindAllStringSubmatch(v, -1)
+			if len(matches) != 1 {
+				return w, fmt.Errorf("ErrDecodingWeeks:invalid weeks count")
+			}
+			begin, err := strconv.Atoi(matches[0][1])
 			if err != nil {
-				return w, fmt.Errorf("ErrDecodingWeeks:%v", err)
+				return 0, fmt.Errorf("ErrDecodingWeeks:invalid begin time")
+			}
+			end, err := strconv.Atoi(matches[0][2])
+			if err != nil {
+				return 0, fmt.Errorf("ErrDecodingWeeks:invalid end time")
+			}
+			if len(matches[0]) == 5 {
+				switch matches[0][4] {
+				case "单":
+					status = 0
+				case "双":
+					status = 1
+				default:
+					status = 2
+				}
 			}
 			for begin <= end {
+				if status == begin%2 {
+					begin++
+					continue
+				}
 				w |= 1 << begin
 				begin++
 			}
