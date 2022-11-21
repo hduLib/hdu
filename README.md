@@ -20,15 +20,22 @@
 - [x] cas统一认证
 - [x] 请假
 - [x] 课表(skl api)
-- [ ] 省教育平台zjooc
+- [x] 省教育平台zjooc(目前仅读取课程)
 - [ ] 超星学习通(网页端v2 api)
 - [ ] 中国大学mooc
 - [ ] 智慧树
 - [x] 物理实验平台
 - [ ] CET
 
+## 社区
+
+- [hdu-lis](https://github.com/MarleneJiang/hdu-lis) 用js写的hduLib
+- [课表ddl卡片](https://github.com/MarleneJiang/hdu-scriptable) 基于scriptable的ios小组件，用于显示ddl和课表
+- [健康打卡](https://github.com/HDU-HealthCheckin/HealthCheckin-Release)
+
 ## 感谢
 
 本项目参考了很多大佬的成果，在此一并列出并感谢
 
 <https://github.com/AkaAny/hduhelp-tweet/>
+
