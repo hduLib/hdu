@@ -9,7 +9,7 @@ import (
 	"github.com/hduLib/hdu/internal/ocr"
 )
 
-func getCaptchaContent() (string, error) {
+func getCaptchaContent(u *User) (string, error) {
 	req, err := http.NewRequest(http.MethodGet, "http://phy.hdu.edu.cn/captcha.svl", nil)
 	if err != nil {
 		return "", err
@@ -30,7 +30,7 @@ func getCaptchaContent() (string, error) {
 	}
 
 	// get JSessionId when get captcha
-	setJSessionId(resp.Cookies())
+	u.setJSessionId(resp.Cookies())
 
 	// read in image
 	b, err := io.ReadAll(resp.Body)
@@ -48,12 +48,12 @@ func getCaptchaContent() (string, error) {
 	return captchaContent, nil
 }
 
-func setJSessionId(cookies []*http.Cookie) {
+func (u *User) setJSessionId(cookies []*http.Cookie) {
 	for _, cookie := range cookies {
 		if cookie.Name != "JSESSIONID" {
 			continue
 		}
-		JSessionId = cookie.Value
+		u.SessionId = cookie.Value
 		return
 	}
 }

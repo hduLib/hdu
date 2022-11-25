@@ -19,7 +19,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestLogin(t *testing.T) {
-	err := Login(studentId, password)
+	_, err := Login(studentId, password)
 	if err != nil {
 		t.Fatal(err)
 	}
