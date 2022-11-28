@@ -22,11 +22,11 @@ type Experiment struct {
 }
 
 // GetExperimentSche 返回所有实验安排
-func GetExperimentSche() (*ExperSche, error) {
-	if JSessionId == "" {
+func (u *User) GetExperimentSche() (*ExperSche, error) {
+	if u.SessionId == "" {
 		return nil, ErrNoJSessionId
 	}
-	return getExperSches()
+	return u.getExperSches()
 }
 
 var (
@@ -35,7 +35,7 @@ var (
 	QueryExperimentId = "-1"
 )
 
-func getExperSches() (*ExperSche, error) {
+func (u *User) getExperSches() (*ExperSche, error) {
 	payload := buildExprSchePayload(CourseId, SemesterNo, QueryExperimentId)
 
 	req, err := http.NewRequest(http.MethodPost, "http://phy.hdu.edu.cn/phymember/v_mycourse_changed.jspx", strings.NewReader(payload))
@@ -48,7 +48,7 @@ func getExperSches() (*ExperSche, error) {
 		req.Header.Set("accept", "application/json, text/javascript, */*")
 		req.Header.Set("accept-language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
 		req.Header.Set("content-type", "application/x-www-form-urlencoded")
-		req.Header.Set("cookie", "clientlanguage=zh_CN; JSESSIONID="+JSessionId)
+		req.Header.Set("cookie", "clientlanguage=zh_CN; JSESSIONID="+u.SessionId)
 		req.Header.Set("origin", "https://phy.hdu.edu.cn")
 		req.Header.Set("referer", "https://phy.hdu.edu.cn/phymember/expt_schedule_student.jspx")
 		req.Header.Set("sec-ch-ua", `"Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"`)
