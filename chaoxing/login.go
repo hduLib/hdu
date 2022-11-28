@@ -41,6 +41,9 @@ func LoginWithPhoneAndPwd(phone string, passwd string) (*Cx, error) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("request fail:%v", err)
+	}
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("request fail:http code is %d", resp.StatusCode)
 	}
