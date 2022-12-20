@@ -6,7 +6,7 @@
 
 # hdu
 
-![Version](https://img.shields.io/badge/version-0.1.1-blue.svg)
+![Version](https://img.shields.io/badge/version-0.1.2-blue.svg)
 ![Go Version](https://img.shields.io/badge/golang-1.19-blue.svg)
 [![Go Reference](https://pkg.go.dev/badge/github.com/hduLib/hdu.svg)](https://pkg.go.dev/github.com/hduLib/hdu)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hduLib/hdu)](https://goreportcard.com/report/github.com/hduLib/hdu)
