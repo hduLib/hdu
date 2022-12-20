@@ -1,6 +1,7 @@
 package skl
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -19,8 +20,12 @@ func TestUser_Push(t *testing.T) {
 		return
 	}
 	if err := skl.Push(&PushReqHDU); err != nil {
-		t.Error(err)
-		return
+		if errors.Is(err, ErrAlreadyPushed) {
+			t.Log(err)
+		} else {
+			t.Error(err)
+			return
+		}
 	}
 }
 

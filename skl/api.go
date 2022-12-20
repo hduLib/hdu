@@ -1,9 +1,27 @@
 package skl
 
-import "time"
+import (
+	"encoding/json"
+	"github.com/hduLib/hdu/client"
+	"time"
+)
 
 func (user *User) Push(payload *PushReq) error {
 	_, err := user.post(pushURL, payload)
+	if err == nil {
+		return nil
+	}
+	if err, ok := err.(*client.ErrNotOk); ok {
+		if err.StatusCode == 400 {
+			var msg errorMsg
+			if err1 := json.Unmarshal([]byte(err.Body), &msg); err1 != nil {
+				return err
+			}
+			if msg.Code == 0 && msg.Msg == "今日已经打卡" {
+				return ErrAlreadyPushed
+			}
+		}
+	}
 	return err
 }
 
