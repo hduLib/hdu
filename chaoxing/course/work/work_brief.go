@@ -12,8 +12,9 @@ type Brief struct {
 	// 精确数据请先打开作业
 	Time time.Time
 	// 未交、已完成、待批阅
-	Status string
-	req    *request.Request
+	Status  string
+	ClazzId string
+	req     *request.Request
 }
 
 func (b *Brief) Detail() *Work {

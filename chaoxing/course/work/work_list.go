@@ -46,12 +46,15 @@ func NewListPhoneAPI(resp []byte, req *request.Request) (*List, error) {
 		if !exist {
 			log.Println("url not exist")
 		}
+		pos := strings.Index(url, "clazzId=")
+
 		list.Works = append(list.Works, Brief{
-			url:    url,
-			Title:  selection.Find("p").Contents().Text(),
-			Time:   utils.ParseLeftTime2Deadline(strings.TrimSpace(selection.Find(".fr").Contents().Text())),
-			Status: selection.Find(".status").Contents().Text(),
-			req:    req,
+			url:     url,
+			ClazzId: url[pos+8 : pos+16],
+			Title:   selection.Find("p").Contents().Text(),
+			Time:    utils.ParseLeftTime2Deadline(strings.TrimSpace(selection.Find(".fr").Contents().Text())),
+			Status:  selection.Find(".status").Contents().Text(),
+			req:     req,
 		})
 	})
 	return &list, nil
