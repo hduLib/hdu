@@ -80,7 +80,7 @@ func TestWork_Detail(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	c, err := list.FindByName("计算机平面动画设计与制作").Detail()
+	c, err := list.FindByName("创新实践B").Detail()
 	if err != nil {
 		t.Error(err)
 		return
@@ -116,4 +116,18 @@ func TestCourseChapter_NewList(t *testing.T) {
 		return
 	}
 	t.Log(chapter)
+}
+
+func TestCx_WorkList(t *testing.T) {
+	user, err := LoginWithPhoneAndPwd(phone, passwd)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	list, err := user.WorkList()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(list)
 }
