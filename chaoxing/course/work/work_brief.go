@@ -11,7 +11,7 @@ type Brief struct {
 	// 根据剩余时间推断，可能有±1分钟的误差，对已完成作业无法获取截止时间
 	// 精确数据请先打开作业
 	Time time.Time
-	// 未交、已完成、待批阅
+	// 未交（手机作业列表API->未完成）、已完成、待批阅
 	Status  string
 	ClazzId string
 	req     *request.Request
