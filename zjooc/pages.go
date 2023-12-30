@@ -2,8 +2,7 @@ package zjooc
 
 func allPages[T any](u *User, getNextURL func() string) ([]T, error) {
 	var items []T
-	var no = 1
-	for {
+	for no := 1; ; no++ {
 		url := getNextURL()
 		resp := new(Resp[[]T])
 		err := u.get(url, resp)
@@ -13,7 +12,7 @@ func allPages[T any](u *User, getNextURL func() string) ([]T, error) {
 		for _, v := range resp.Data {
 			items = append(items, v)
 		}
-		if len(items) != no*pageSize {
+		if len(items) < no*pageSize {
 			break
 		}
 	}
