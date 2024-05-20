@@ -14,7 +14,7 @@ import (
 var keyRegexp = regexp.MustCompile("<p id=\"login-croypto\">(.*?)</p>")
 var executionRegexp = regexp.MustCompile("<p id=\"login-page-flowkey\">(.*?)</p>")
 
-func Login(URL, user, passwd string) ([]*http.Cookie, error) {
+func GenLoginReq(URL, user, passwd string) (*http.Request, error) {
 	var key, execution []byte
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	if err != nil {
@@ -76,26 +76,22 @@ func Login(URL, user, passwd string) ([]*http.Cookie, error) {
 		req.AddCookie(c)
 	}
 
-	// sso has special referer header check
+	var nextReq *http.Request
 	c := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			switch len(via) {
-			// redirect to i.hdu.edu.cn with ticket
-			case 1:
-				delete(req.Header, "Referer")
-			// set cookie and visit i.hdu.edu.cn, abort it
-			case 2:
-				return http.ErrUseLastResponse
-			default:
-				return errors.New("unexpected redirect")
-			}
-			return nil
+			nextReq = req
+			return http.ErrUseLastResponse
 		},
 	}
+
 	resp, err = c.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("do request: %v", err)
 	}
 
-	return resp.Cookies(), nil
+	if nextReq == nil || nextReq.URL.Hostname() == "sso.hdu.edu.cn" {
+		return nil, errors.New("login failed")
+	}
+
+	return nextReq, nil
 }
