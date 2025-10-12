@@ -1,6 +1,8 @@
 module github.com/hduLib/hdu
 
-go 1.19
+go 1.24
+
+toolchain go1.24.5
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0

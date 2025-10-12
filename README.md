@@ -23,14 +23,14 @@
 ## 功能
 
 - [x] 健康打卡（skl）
-- [x] sso单点登录
-- [x] cas统一认证(即将弃用)
+- [x] sso 单点登录
+- [x] cas 统一认证 (已弃用)
 - [ ] web vpn
 - [x] 请假
-- [x] 课表(skl api)
-- [x] 省教育平台zjooc(目前仅读取课程)
-- [x] 超星学习通(网页端v2 api)
-- [ ] 中国大学mooc
+- [x] 课表 (skl api)
+- [x] 省教育平台 zjooc(目前仅读取课程)
+- [x] 超星学习通 (网页端 v2 api)
+- [ ] 中国大学 mooc
 - [ ] 智慧树
 - [x] 物理实验平台
 - [ ] CET
@@ -38,8 +38,8 @@
 
 ## 社区
 
-- [hdu-lis](https://github.com/MarleneJiang/hdu-lis) 用js写的hduLib
-- [课表ddl卡片](https://github.com/MarleneJiang/hdu-scriptable) 基于scriptable的ios小组件，用于显示ddl和课表
+- [hdu-lis](https://github.com/MarleneJiang/hdu-lis) 用 js 写的 hduLib
+- [课表 ddl 卡片](https://github.com/MarleneJiang/hdu-scriptable) 基于 scriptable 的 ios 小组件，用于显示 ddl 和课表
 - [健康打卡](https://github.com/HDU-HealthCheckin/HealthCheckin-Release)
 
 ## 感谢
