@@ -2,30 +2,37 @@ package sso
 
 import (
 	"bytes"
-	"crypto/des"
+	"crypto/aes"
 	"encoding/base64"
-	"fmt"
 )
 
-func EncryptPasswd(key []byte, password string) (string, error) {
-	var keyBytes [8]byte
-	if _, err := base64.StdEncoding.Decode(keyBytes[:], key); err != nil {
-		return "", fmt.Errorf("decode key: %v", err)
-	}
-	cipher, err := des.NewCipher(keyBytes[:])
+// AesEncrypt 使用 AES/ECB/PKCS7Padding 模式加密文本
+func AesEncrypt(key, plainText string) (string, error) {
+	keyBytes, err := base64.StdEncoding.DecodeString(key)
 	if err != nil {
-		return "", fmt.Errorf("des cipher: %v", err)
+		return "", err
 	}
-	// padding
-	text := pkcs7Padding([]byte(password), cipher.BlockSize())
-	// ecb mode
-	for i := 0; i < len(text); i += cipher.BlockSize() {
-		cipher.Encrypt(text[i:], text[i:])
+
+	block, err := aes.NewCipher(keyBytes)
+	if err != nil {
+		return "", err
 	}
-	return base64.StdEncoding.EncodeToString(text), nil
+
+	paddedText := PKCS7Padding([]byte(plainText), block.BlockSize())
+	cipherText := make([]byte, len(paddedText))
+
+	// ECB 模式是分块加密
+	for bs, be := 0, block.BlockSize(); bs < len(paddedText); bs, be = bs+block.BlockSize(), be+block.BlockSize() {
+		block.Encrypt(cipherText[bs:be], paddedText[bs:be])
+	}
+
+	encodedCipherText := base64.StdEncoding.EncodeToString(cipherText)
+	return encodedCipherText, nil
 }
 
-func pkcs7Padding(data []byte, blockSize int) []byte {
-	padding := blockSize - len(data)%blockSize
-	return append(data, bytes.Repeat([]byte{byte(padding)}, padding)...)
+// PKCS7Padding 将明文填充到块大小的倍数
+func PKCS7Padding(plainText []byte, blockSize int) []byte {
+	padding := blockSize - len(plainText)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(plainText, padtext...)
 }

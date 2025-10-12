@@ -23,3 +23,4 @@
 .env
 .env.development
 .env.production
+*.png

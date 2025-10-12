@@ -1,97 +1,98 @@
 package sso
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"github.com/hduLib/hdu/client"
 	"io"
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
+
+	"github.com/hduLib/hdu/client"
 )
 
-var keyRegexp = regexp.MustCompile("<p id=\"login-croypto\">(.*?)</p>")
-var executionRegexp = regexp.MustCompile("<p id=\"login-page-flowkey\">(.*?)</p>")
+// 正则表达式用于从 HTML 中提取 execution 和 croypto
+var executionRegexp = regexp.MustCompile(`id="login-page-flowkey"[^>]*>([^<]+)`)
+var croyptoRegexp = regexp.MustCompile(`id="login-croypto"[^>]*>([^<]+)`)
 
 func GenLoginReq(URL, user, passwd string) (*http.Request, error) {
-	var key, execution []byte
+	// 1. GET 登录页，获取 execution 和 croypto
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("create request: %v", err)
+		return nil, fmt.Errorf("创建GET请求失败: %v", err)
 	}
-	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36")
+
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("执行GET请求失败: %v", err)
 	}
-	if resp.StatusCode != 200 {
-		reason, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return nil, fmt.Errorf("read body: %v", err)
-		}
-		return nil, fmt.Errorf("get key lt and excution: %s", string(reason))
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("获取登录页面失败，状态码：%d", resp.StatusCode)
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("读取响应体失败: %v", err)
 	}
-	tmp := keyRegexp.FindSubmatch(body)
-	if len(tmp) != 2 {
-		return nil, errors.New("match key")
-	}
-	key = tmp[1]
-	tmp = executionRegexp.FindSubmatch(body)
-	if len(tmp) != 2 {
-		return nil, errors.New("match execution")
-	}
-	execution = tmp[1]
-	bytes.Trim(key, " \"\r\n")
 
-	//获取password
-	encryptedPasswd, err := EncryptPasswd(key, passwd)
+	execMatch := executionRegexp.FindSubmatch(body)
+	if len(execMatch) < 2 {
+		return nil, errors.New("未能从页面中提取 execution (flowkey)")
+	}
+	execution := string(execMatch[1])
+
+	croyptoMatch := croyptoRegexp.FindSubmatch(body)
+	if len(croyptoMatch) < 2 {
+		return nil, errors.New("未能从页面中提取 croypto")
+	}
+	// croypto 现在总是在第一个捕获组
+	croypto := string(croyptoMatch[1])
+
+	// 2. 使用 AES 加密密码
+	encryptedPasswd, err := AesEncrypt(croypto, passwd)
 	if err != nil {
-		return nil, fmt.Errorf("encrypt password: %v", err)
+		return nil, fmt.Errorf("使用AES加密密码失败: %v", err)
 	}
 
+	// 3. 构造 POST 请求
 	postData := url.Values{}
 	postData.Set("username", user)
-	postData.Set("passwordPre", passwd)
 	postData.Set("password", encryptedPasswd)
+	postData.Set("execution", execution)
+	postData.Set("croypto", croypto)
 	postData.Set("type", "UsernamePassword")
 	postData.Set("_eventId", "submit")
 	postData.Set("geolocation", "")
-	postData.Set("execution", string(execution))
-	// missing spelling from hdu, so what can I say?
-	postData.Set("croypto", string(key))
 
-	req, err = http.NewRequest(http.MethodPost, URL, bytes.NewBufferString(postData.Encode()))
+	postReq, err := http.NewRequest(http.MethodPost, URL, strings.NewReader(postData.Encode()))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("创建POST请求失败: %v", err)
 	}
-	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0")
-	req.Header.Add("Referer", URL)
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	// 4. 设置请求头
+	postReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	postReq.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36")
+	postReq.Header.Set("Referer", URL)
 	for _, c := range resp.Cookies() {
-		req.AddCookie(c)
+		postReq.AddCookie(c)
 	}
 
-	var nextReq *http.Request
-	c := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			nextReq = req
-			return http.ErrUseLastResponse
-		},
-	}
-
-	resp, err = c.Do(req)
+	// 5. 发送登录请求并处理重定向
+	finalResp, err := client.Do(postReq)
 	if err != nil {
-		return nil, fmt.Errorf("do request: %v", err)
+		return nil, fmt.Errorf("执行POST请求失败: %v", err)
+	}
+	defer finalResp.Body.Close()
+
+	// 6. 检查登录是否成功
+	finalURL := finalResp.Request.URL.String()
+	if strings.Contains(finalURL, "sso.hdu.edu.cn") {
+		return nil, errors.New("登录失败，请检查用户名或密码")
 	}
 
-	if nextReq == nil || nextReq.URL.Hostname() == "sso.hdu.edu.cn" {
-		return nil, errors.New("login failed")
-	}
-
-	return nextReq, nil
+	// 登录成功，返回最终的请求对象，其中包含了所有 cookies
+	return finalResp.Request, nil
 }
